@@ -1,0 +1,3 @@
+[submodule "globalfoundries-pdk-libs-gf180mcu_fd_io"]
+	path = globalfoundries-pdk-libs-gf180mcu_fd_io
+	url = https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_io.git
