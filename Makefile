@@ -1,6 +1,8 @@
 # User parameters
 #################
 
+# SEE THIS: https://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents
+
 PDK=gf180mcuD
 
 # TOP is a directory that contains relevant files that share the same name.
@@ -100,7 +102,10 @@ TOP_NETLIST_GDS:=$(filter %$(TOP)_5lm.cir,$(ALL_NETLIST))
 # Relevant directories
 #################
 
-LOGDIR=$(realpath logs)/$(TIMESTAMP_DAY)
+LOGDIR=$(abspath logs)/$(TIMESTAMP_DAY)
+ifeq (,$(wildcard $(LOGDIR)))
+$(shell mkdir -p $(LOGDIR))
+endif
 
 MAGIC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic.log
 XSCHEM_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem.log
@@ -119,8 +124,8 @@ KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs.log
 XSCHEM_RCFILE=$(realpath ./xschemrc)
 
 MAGIC_RCFILE=$(realpath ./magicrc)
-MAGIC_LVS=$(realpath ../scripts/magic_lvs.tcl)
-MAGIC_PEX=$(realpath ../scripts/magic_pex.tcl)
+MAGIC_LVS=$(realpath scripts/magic_lvs.tcl)
+MAGIC_PEX=$(realpath scripts/magic_pex.tcl)
 
 NETGEN_RCFILE=$(PDK_ROOT)/$(PDK)/libs.tech/netgen/setup.tcl
 
@@ -152,7 +157,12 @@ XSCHEM_NETLIST_WITHOUT_SPICEPREFIX=xschem --rcfile ./xschemrc \
 
 KLAYOUT=klayout -t -d 1
 
-MAGIC=LAYOUT=$(notdir $(TOP_GDS)) TOP=$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
+PEX_DIR=$(abspath ./pex)
+ifeq (,$(wildcard $(PEX_DIR)))
+$(shell mkdir -p $(PEX_DIR))
+endif
+
+MAGIC= PEX_DIR=$(PEX_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
 MAGIC_BATCH=$(MAGIC) -nowrapper -nowindow -D -dnull
 
 NETGEN=netgen -batch lvs
@@ -356,7 +366,8 @@ klayout-eval: klayout-drc-only klayout-lvs-only
 # TODO: Do pex extraction include resistances?
 
 .PHONY: magic
-magic: magic-edit
+magic:
+	$(MAGIC)
 
 
 .PHONY: magic-edit
@@ -373,6 +384,24 @@ magic-lvs: logdir
 .PHONY: magic-pex
 magic-pex: logdir
 	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX) |& tee $(MAGIC_PARASITIC_LOG)
+
+
+.PHONY: magic-pex-all
+magic-pex-all: logdir
+	make TOP=asig_5p0 magic-pex
+	make TOP=bi_t magic-pex
+	make TOP=in_c magic-pex
+	make TOP=dvdd magic-pex
+	make TOP=dvss magic-pex
+	# make TOP=in_s magic-pex
+	# make TOP=bi_24t magic-pex
+	# make TOP=brk2 magic-pex
+	# make TOP=brk5 magic-pex
+	# make TOP=cor magic-pex
+	# make TOP=fill1 magic-pex
+	# make TOP=fill10 magic-pex
+	# make TOP=fill5 magic-pex
+	# make TOP=fillnc magic-pex
 
 
 #########
