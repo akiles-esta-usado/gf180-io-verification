@@ -9,21 +9,24 @@ spice_sym_def="tcleval( .include [abs_sym_path gf180mcu_fd_io_pex.ngspice] )"
 V {}
 S {}
 E {}
-L 4 -130 -40 130 -40 {}
-L 4 -130 40 130 40 {}
-L 4 -130 -40 -130 40 {}
-L 4 130 -40 130 40 {}
-L 7 0 -60 0 -40 {}
-L 7 10 40 10 60 {}
-L 7 -10 40 -10 60 {}
-L 7 130 0 150 0 {}
-B 5 -2.5 -62.5 2.5 -57.5 {name=DVDD dir=inout}
-B 5 7.5 57.5 12.5 62.5 {name=VSS dir=inout}
-B 5 -12.5 57.5 -7.5 62.5 {name=DVSS dir=inout}
-B 5 147.5 -2.5 152.5 2.5 {name=ASIG5V dir=inout}
-T {@symname} -125 -6 0 0 0.3 0.3 {}
-T {@name} 135 -52 0 0 0.2 0.2 {}
-T {DVDD} -4 -35 3 1 0.2 0.2 {}
-T {VSS} 14 35 1 1 0.2 0.2 {}
-T {DVSS} -6 35 1 1 0.2 0.2 {}
-T {ASIG5V} 125 -4 0 1 0.2 0.2 {}
+L 4 -205.0 -60.0 205.0 -60.0 {}
+L 4 -205.0 -60.0 -205.0 60.0 {}
+L 4 205.0 -60.0 205.0 60.0 {}
+L 4 -205.0 60.0 205.0 60.0 {}
+T {@symname} -140.0 -10.0 0 0 0.3 0.3 {font=Monospace}
+T {@name}    205.0 -70.0 0 0 0.2 0.2 {font=Monospace}
+L 7 -10.0 -60.0 -10.0 -80.0 {}
+B 5 -12.5 -82.5 -7.5 -77.5 {name=VDD dir=inout}
+T {VDD} -15.0 -55.0 3 1 0.2 0.2 {font=Monospace}
+L 7 10.0 -60.0 10.0 -80.0 {}
+B 5 7.5 -82.5 12.5 -77.5 {name=DVDD dir=inout}
+T {DVDD} 5.0 -55.0 3 1 0.2 0.2 {font=Monospace}
+L 7 -205.0 0.0 -225.0 0.0 {}
+B 5 -227.5 -2.5 -222.5 2.5 {name=ASIG5V dir=inout}
+T {ASIG5V} -200.0 -5.0 0 0 0.2 0.2 {font=Monospace}
+L 7 -10.0 60.0 -10.0 80.0 {}
+B 5 -12.5 77.5 -7.5 82.5 {name=VSS dir=inout}
+T {VSS} -15.0 55.0 3 0 0.2 0.2 {font=Monospace}
+L 7 10.0 60.0 10.0 80.0 {}
+B 5 7.5 77.5 12.5 82.5 {name=DVSS dir=inout}
+T {DVSS} 5.0 55.0 3 0 0.2 0.2 {font=Monospace}

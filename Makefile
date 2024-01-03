@@ -20,9 +20,18 @@ endif
 CELL_DIR=$(abspath ./globalfoundries-pdk-libs-gf180mcu_fd_io/cells)
 
 TOP_DIR:=$(abspath $(dir $(CELL_DIR)/$(TOP)))/$(TOP)
-
 ifeq (,$(wildcard $(TOP_DIR)))
 $(error directory $(TOP_DIR) don't exist)
+endif
+
+PEX_DIR=$(abspath ./pex)
+ifeq (,$(wildcard $(PEX_DIR)))
+$(shell mkdir -p $(PEX_DIR))
+endif
+
+LOGDIR=$(abspath logs)/$(TIMESTAMP_DAY)
+ifeq (,$(wildcard $(LOGDIR)))
+$(shell mkdir -p $(LOGDIR))
 endif
 
 # TODO: Are we catching stderr into log files?
@@ -51,7 +60,8 @@ ALL_FILES:=$(wildcard $(CELL_DIR)/*) \
 		   $(wildcard $(CELL_DIR)/fill5/*) \
 		   $(wildcard $(CELL_DIR)/fillnc/*) \
 		   $(wildcard $(CELL_DIR)/in_c/*) \
-		   $(wildcard $(CELL_DIR)/in_s/*)
+		   $(wildcard $(CELL_DIR)/in_s/*) \
+		   $(wildcard $(PEX_DIR)/*)
 
 ## 2. Filter by type #
 
@@ -69,9 +79,13 @@ ALL_NETLIST:= \
 
 # Schematics
 SCH:=$(filter-out %-test.sch,$(ALL_SCH))
+SYM:=$(filter %.sym,$(ALL_FILES))
 
 # Testbenches
 TB:=$(filter %-test.sch,$(ALL_SCH))
+
+# Parasitix extraction (pex)
+PEX:=$(filter %.pex,$(ALL_FILES))
 
 # Layout (gds)
 GDS:=$(filter %.gds,$(ALL_LAYOUT))
@@ -95,17 +109,15 @@ TOP_TB:=$(filter %$(TOP)-test.sch,$(TB))
 
 TOP_GDS:=$(filter %$(TOP)_5lm.gds,$(GDS))
 
+TOP_PEX:=$(filter %$(TOP).pex,$(PEX))
+TOP_PEX_SYM:=$(filter %$(TOP)_flat.sym,$(SYM))
+
 TOP_NETLIST_SCH:=$(filter %$(TOP).cdl,$(ALL_NETLIST))
 TOP_NETLIST_GDS:=$(filter %$(TOP)_5lm.cir,$(ALL_NETLIST))
 
 
 # Relevant directories
 #################
-
-LOGDIR=$(abspath logs)/$(TIMESTAMP_DAY)
-ifeq (,$(wildcard $(LOGDIR)))
-$(shell mkdir -p $(LOGDIR))
-endif
 
 MAGIC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-$(TOP).log
 XSCHEM_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-$(TOP).log
@@ -156,11 +168,6 @@ XSCHEM_NETLIST_WITHOUT_SPICEPREFIX=xschem --rcfile ./xschemrc \
 	--quit
 
 KLAYOUT=klayout -t -d 1
-
-PEX_DIR=$(abspath ./pex)
-ifeq (,$(wildcard $(PEX_DIR)))
-$(shell mkdir -p $(PEX_DIR))
-endif
 
 MAGIC=PEX_DIR=$(PEX_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
 MAGIC_BATCH=$(MAGIC) -nowrapper -nowindow -D -dnull
@@ -231,7 +238,8 @@ xschem-lvs-klayout-compatible:
 
 .PHONY: xschem-make-sym
 xschem-make-sym:
-	cp pex/gf180mcu_fd_io__in_c_flat.sym pex/gf180mcu_fd_io__$(TOP)_flat.sym 
+	python scripts/gen_sym.py $(TOP_PEX) $(PEX_DIR)
+	#$(XSCHEM) $(TOP_PEX_SYM)
 
 
 ##########
@@ -384,6 +392,7 @@ magic-lvs:
 .PHONY: magic-pex
 magic-pex:
 	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX) |& tee $(MAGIC_PEX_LOG)
+	make TOP=$(TOP) xschem-make-sym
 
 
 .PHONY: magic-pex-all
