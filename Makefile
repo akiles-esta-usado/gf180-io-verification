@@ -107,15 +107,15 @@ ifeq (,$(wildcard $(LOGDIR)))
 $(shell mkdir -p $(LOGDIR))
 endif
 
-MAGIC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic.log
-XSCHEM_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem.log
-NETGEN_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-netgen.log
-KLAYOUT_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout.log
+MAGIC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-$(TOP).log
+XSCHEM_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-$(TOP).log
+NETGEN_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-netgen-$(TOP).log
+KLAYOUT_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-$(TOP).log
 
-MAGIC_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-lvs.log
-MAGIC_PARASITIC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-pex.log
-XSCHEM_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-lvs.log
-KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs.log
+MAGIC_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-lvs-$(TOP).log
+MAGIC_PEX_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-pex-$(TOP).log
+XSCHEM_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-lvs-$(TOP).log
+KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs-$(TOP).log
 
 # Configuration files
 #####################
@@ -162,7 +162,7 @@ ifeq (,$(wildcard $(PEX_DIR)))
 $(shell mkdir -p $(PEX_DIR))
 endif
 
-MAGIC= PEX_DIR=$(PEX_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
+MAGIC=PEX_DIR=$(PEX_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
 MAGIC_BATCH=$(MAGIC) -nowrapper -nowindow -D -dnull
 
 NETGEN=netgen -batch lvs
@@ -177,11 +177,6 @@ all: xschem
 .PHONY: clean
 clean:
 	$(RM) $(CLEANABLE)
-
-
-.PHONY: logdir
-logdir:
-	mkdir -p $(LOGDIR)
 
 
 # https://www.cmcrossroads.com/article/printing-value-makefile-variable
@@ -211,27 +206,32 @@ xschem:
 
 
 .PHONY: xschem-sch
-xschem-sch: logdir
+xschem-sch:
 	$(XSCHEM) $(TOP_SCH) |& tee $(XSCHEM_LOG)
 
 
 .PHONY: xschem-tb
-xschem-tb: logdir
+xschem-tb:
 	$(XSCHEM) $(TOP_TB) |& tee $(XSCHEM_LOG)
 
 
 .PHONY: xschem-lvs
-xschem-lvs: logdir
+xschem-lvs:
 	$(XSCHEM_NETLIST) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
 
 
 .PHONY: xschem-lvs-klayout-compatible
-xschem-lvs-klayout-compatible: logdir
+xschem-lvs-klayout-compatible:
 	$(XSCHEM_NETLIST_WITHOUT_SPICEPREFIX) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
 	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_width/W/' $(TOP_DIR)/$(TOP).spice
 	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_length/L/' $(TOP_DIR)/$(TOP).spice
 	sed -i '/R.*ppoly/s/r_width/W/' $(TOP_DIR)/$(TOP).spice
 	sed -i '/R.*ppoly/s/r_length/L/' $(TOP_DIR)/$(TOP).spice
+
+
+.PHONY: xschem-make-sym
+xschem-make-sym:
+	cp pex/gf180mcu_fd_io__in_c_flat.sym pex/gf180mcu_fd_io__$(TOP)_flat.sym 
 
 
 ##########
@@ -247,12 +247,12 @@ klayout: klayout-view
 
 
 .PHONY: klayout-view
-klayout-view: logdir
+klayout-view:
 	$(KLAYOUT) -ne $(TOP_GDS) |& tee $(KLAYOUT_LOG)
 
 
 .PHONY: klayout-edit
-klayout-edit: logdir
+klayout-edit:
 	$(KLAYOUT) -e $(TOP_GDS) |& tee $(KLAYOUT_LOG)
 
 
@@ -292,7 +292,7 @@ klayout-lvs-view:
 
 
 .PHONY: klayout-lvs-only
-klayout-lvs-only: logdir
+klayout-lvs-only:
 	python $(KLAYOUT_HOME)/lvs/run_lvs.py \
 		--variant=D \
 		--run_mode=flat \
@@ -305,7 +305,7 @@ klayout-lvs-only: logdir
 
 
 .PHONY: klayout-lvs
-klayout-lvs: logdir klayout-lvs-only
+klayout-lvs: klayout-lvs-only
 	make TOP=$(TOP) klayout-lvs-view
 
 
@@ -319,7 +319,7 @@ klayout-drc-view:
 
 
 .PHONY: klayout-drc-only
-klayout-drc-only: logdir
+klayout-drc-only:
 	$(RM) $(TOP_DIR)/*.lyrdb
 
 	python $(KLAYOUT_HOME)/drc/run_drc.py \
@@ -350,7 +350,7 @@ klayout-drc-only: logdir
 
 
 .PHONY: klayout-drc
-klayout-drc: logdir klayout-drc-only
+klayout-drc: klayout-drc-only
 	make TOP=$(TOP) klayout-drc-view
 
 
@@ -371,23 +371,23 @@ magic:
 
 
 .PHONY: magic-edit
-magic-edit: logdir
+magic-edit:
 	$(MAGIC) $(TOP_GDS) |& tee $(MAGIC_LOG)
 
 
 # Working on the TOP_DIR for simplicity, maybe we can change a internal variable to write all there.
 .PHONY: magic-lvs
-magic-lvs: logdir
+magic-lvs:
 	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_LVS) |& tee $(MAGIC_LVS_LOG)
 
 
 .PHONY: magic-pex
-magic-pex: logdir
-	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX) |& tee $(MAGIC_PARASITIC_LOG)
+magic-pex:
+	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX) |& tee $(MAGIC_PEX_LOG)
 
 
 .PHONY: magic-pex-all
-magic-pex-all: logdir
+magic-pex-all:
 	make TOP=asig_5p0 magic-pex
 	make TOP=bi_t magic-pex
 	make TOP=in_c magic-pex
@@ -409,13 +409,13 @@ magic-pex-all: logdir
 #########
 
 .PHONY: netgen-lvs
-netgen-lvs: logdir magic-lvs xschem-lvs
+netgen-lvs: magic-lvs xschem-lvs
 	cd $(TOP_DIR) && $(NETGEN) "$(notdir $(TOP_NETLIST_GDS)) $(TOP)" "$(notdir $(TOP_NETLIST_SCH)) $(TOP)" $(NETGEN_RCFILE) |& tee $(NETGEN_LOG) || true
 	cd $(TOP_DIR) && grep "Netlist" comp.out
 
 
 .PHONY: netgen-magic-lvs
-netgen-magic-lvs: logdir magic-lvs xschem-lvs
+netgen-magic-lvs: magic-lvs xschem-lvs
 	cd $(TOP_DIR) && $(NETGEN) "$(notdir $(TOP_NETLIST_GDS)) $(TOP)_flat" "$(notdir $(TOP_NETLIST_SCH)) $(TOP)" $(NETGEN_RCFILE) |& tee $(NETGEN_LOG) || true
 	cd $(TOP_DIR) && grep "Netlist" comp.out
 

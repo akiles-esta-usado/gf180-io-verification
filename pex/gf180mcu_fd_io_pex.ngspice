@@ -1,0 +1,5 @@
+.include gf180mcu_fd_io__asig_5p0.pex
+.include gf180mcu_fd_io__bi_t.pex
+.include gf180mcu_fd_io__in_c.pex
+.include gf180mcu_fd_io__dvdd.pex
+.include gf180mcu_fd_io__dvss.pex

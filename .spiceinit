@@ -1,0 +1,6 @@
+set wr_singlescale
+set wr_vecnames
+
+
+set ng_nomodcheck       ; don't check the model parameters
+option noinit           ; don't print operating point data
