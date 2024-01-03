@@ -47,21 +47,9 @@ TIMESTAMP_TIME=$$(date +%H-%M-%S)
 ## 1. Get all files ##
 
 ALL_FILES:=$(wildcard $(CELL_DIR)/*) \
-		   $(wildcard $(CELL_DIR)/asig_5p0/*) \
-		   $(wildcard $(CELL_DIR)/bi_24t/*) \
-		   $(wildcard $(CELL_DIR)/bi_t/*) \
-		   $(wildcard $(CELL_DIR)/brk2/*) \
-		   $(wildcard $(CELL_DIR)/brk5/*) \
-		   $(wildcard $(CELL_DIR)/cor/*) \
-		   $(wildcard $(CELL_DIR)/dvdd/*) \
-		   $(wildcard $(CELL_DIR)/dvss/*) \
-		   $(wildcard $(CELL_DIR)/fill1/*) \
-		   $(wildcard $(CELL_DIR)/fill10/*) \
-		   $(wildcard $(CELL_DIR)/fill5/*) \
-		   $(wildcard $(CELL_DIR)/fillnc/*) \
-		   $(wildcard $(CELL_DIR)/in_c/*) \
-		   $(wildcard $(CELL_DIR)/in_s/*) \
-		   $(wildcard $(PEX_DIR)/*)
+		   $(wildcard $(CELL_DIR)/*/*) \
+		   $(wildcard $(PEX_DIR)/*) \
+		   $(wildcard test/*)
 
 ## 2. Filter by type #
 

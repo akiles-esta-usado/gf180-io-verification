@@ -5,6 +5,28 @@ K {}
 V {}
 S {}
 E {}
+B 2 1840 -340 2640 60 {flags=graph
+y1=-1.6e-15
+y2=-6.3e-23
+ypos1=0
+ypos2=2
+divy=5
+subdivy=1
+unity=1
+x1=0
+x2=2e-05
+divx=5
+subdivx=1
+xlabmag=1.0
+ylabmag=1.0
+node="vdd
+"
+color=9
+dataset=-1
+unitx=1
+logx=0
+logy=0
+}
 N 850 20 850 50 {
 lab=ASIG5V}
 N 930 20 930 50 {
@@ -49,7 +71,7 @@ value="
 .control
 tran 1u 20u
 remzerovec
-plot vdd
+*plot vdd
 write asig_5p0.raw
 .endc
 
@@ -66,8 +88,13 @@ C {devices/iopin.sym} 850 20 0 0 {name=p1 lab=ASIG5V}
 C {devices/iopin.sym} 930 20 0 0 {name=p2 lab=DVDD}
 C {devices/iopin.sym} 1010 20 0 0 {name=p3 lab=VSS}
 C {devices/iopin.sym} 1090 20 0 0 {name=p4 lab=DVSS}
-C {gf180mcu_fd_io__asig_5p0_flat.sym} 1210 -260 0 0 {name=x1}
-C {devices/iopin.sym} 1200 -200 1 0 {name=p5 lab=DVSS}
-C {devices/iopin.sym} 1220 -200 1 0 {name=p6 lab=VSS}
-C {devices/iopin.sym} 1210 -320 0 0 {name=p7 lab=DVDD}
-C {devices/iopin.sym} 1360 -260 0 0 {name=p8 lab=ASIG5V}
+C {gf180mcu_fd_io__asig_5p0_flat.sym} 1580 -220 0 0 {name=x1}
+C {devices/iopin.sym} 1570 -140 1 0 {name=p5 lab=DVSS}
+C {devices/iopin.sym} 1590 -140 1 0 {name=p6 lab=VSS}
+C {devices/iopin.sym} 1590 -300 3 0 {name=p7 lab=DVDD}
+C {devices/iopin.sym} 1350 -220 2 0 {name=p8 lab=ASIG5V}
+C {devices/iopin.sym} 1570 -300 3 0 {name=p9 lab=VDD}
+C {devices/launcher.sym} 1900 -380 0 0 {name=h5
+descr="load waves" 
+tclcommand="xschem raw_read $netlist_dir/asig_5p0.raw tran"
+}
