@@ -4,38 +4,38 @@ G {}
 K {type=subcircuit
 format="@name @pinlist @symname"
 template="name=x1"
-spice_sym_def="tcleval( .include [abs_sym_path gf180mcu_fd_io_pex.ngspice] )"
+spice_sym_def="tcleval( .include [abs_sym_path gf180mcu_fd_io__in_c.pex] )"
 }
 V {}
 S {}
 E {}
-L 4 -155.0 -80.0 155.0 -80.0 {}
-L 4 -155.0 -80.0 -155.0 80.0 {}
-L 4 155.0 -80.0 155.0 80.0 {}
-L 4 -155.0 80.0 155.0 80.0 {}
-T {@symname} -120.0 -10.0 0 0 0.3 0.3 {font=Monospace}
-T {@name}    155.0 -90.0 0 0 0.2 0.2 {font=Monospace}
-L 7 -10.0 -80.0 -10.0 -100.0 {}
-B 5 -12.5 -102.5 -7.5 -97.5 {name=DVDD dir=inout}
-T {DVDD} -15.0 -75.0 3 1 0.2 0.2 {font=Monospace}
-L 7 10.0 -80.0 10.0 -100.0 {}
-B 5 7.5 -102.5 12.5 -97.5 {name=VDD dir=inout}
-T {VDD} 5.0 -75.0 3 1 0.2 0.2 {font=Monospace}
-L 7 -155.0 -30.0 -175.0 -30.0 {}
-B 5 -177.5 -32.5 -172.5 -27.5 {name=PAD dir=inout}
-T {PAD} -150.0 -35.0 0 0 0.2 0.2 {font=Monospace}
-L 7 -155.0 -10.0 -175.0 -10.0 {}
-B 5 -177.5 -12.5 -172.5 -7.5 {name=Y dir=inout}
-T {Y} -150.0 -15.0 0 0 0.2 0.2 {font=Monospace}
-L 7 -155.0 10.0 -175.0 10.0 {}
-B 5 -177.5 7.5 -172.5 12.5 {name=PD dir=inout}
-T {PD} -150.0 5.0 0 0 0.2 0.2 {font=Monospace}
-L 7 -155.0 30.0 -175.0 30.0 {}
-B 5 -177.5 27.5 -172.5 32.5 {name=PU dir=inout}
-T {PU} -150.0 25.0 0 0 0.2 0.2 {font=Monospace}
-L 7 -10.0 80.0 -10.0 100.0 {}
-B 5 -12.5 97.5 -7.5 102.5 {name=DVSS dir=inout}
-T {DVSS} -15.0 75.0 3 0 0.2 0.2 {font=Monospace}
-L 7 10.0 80.0 10.0 100.0 {}
-B 5 7.5 97.5 12.5 102.5 {name=VSS dir=inout}
-T {VSS} 5.0 75.0 3 0 0.2 0.2 {font=Monospace}
+L 4 0 0 310 0 {}
+L 4 0 0 0 160 {}
+L 4 310 0 310 160 {}
+L 4 0 160 310 160 {}
+T {@symname} 35.0 70.0 0 0 0.3 0.3 {font=Monospace}
+T {@name}    310 -10 0 0 0.2 0.2 {font=Monospace}
+L 7 140 0 140 -20 {}
+B 5 137.5 -22.5 142.5 -17.5 {name=DVDD dir=inout}
+T {DVDD} 135 5 3 1 0.2 0.2 {font=Monospace}
+L 7 160 0 160 -20 {}
+B 5 157.5 -22.5 162.5 -17.5 {name=VDD dir=inout}
+T {VDD} 155 5 3 1 0.2 0.2 {font=Monospace}
+L 7 0 40 -20 40 {}
+B 5 -22.5 37.5 -17.5 42.5 {name=PAD dir=inout}
+T {PAD} 5 35 0 0 0.2 0.2 {font=Monospace}
+L 7 0 60 -20 60 {}
+B 5 -22.5 57.5 -17.5 62.5 {name=Y dir=inout}
+T {Y} 5 55 0 0 0.2 0.2 {font=Monospace}
+L 7 0 80 -20 80 {}
+B 5 -22.5 77.5 -17.5 82.5 {name=PD dir=inout}
+T {PD} 5 75 0 0 0.2 0.2 {font=Monospace}
+L 7 0 100 -20 100 {}
+B 5 -22.5 97.5 -17.5 102.5 {name=PU dir=inout}
+T {PU} 5 95 0 0 0.2 0.2 {font=Monospace}
+L 7 140 160 140 180 {}
+B 5 137.5 177.5 142.5 182.5 {name=DVSS dir=inout}
+T {DVSS} 135 155 3 0 0.2 0.2 {font=Monospace}
+L 7 160 160 160 180 {}
+B 5 157.5 177.5 162.5 182.5 {name=VSS dir=inout}
+T {VSS} 155 155 3 0 0.2 0.2 {font=Monospace}

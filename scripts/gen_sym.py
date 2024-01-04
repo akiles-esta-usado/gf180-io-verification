@@ -49,7 +49,7 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
         'K {type=subcircuit',
         'format="@name @pinlist @symname"',
         'template="name=x1"',
-        'spice_sym_def="tcleval( .include [abs_sym_path gf180mcu_fd_io_pex.ngspice] )"',
+        f'spice_sym_def="tcleval( .include [abs_sym_path {netlist_name}.pex] )"',
         '}',
         'V {}',
         'S {}',
@@ -74,13 +74,14 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
     height = top_names_spacing + lateral_port_spacing + bottom_names_spacing + name_spacing
     width = 2*max_lateral_name_spacing + len_symname
 
-    x_base = - width / 2
-    y_base = - height / 2
+    x_base = 0# - width / 2
+    y_base = 0# - height / 2
 
-    top_offset = dx * (len(positions["top"]) - 1)/2
-    left_offset = dy * (len(positions["left"]) - 1)/2
-    bottom_offset = dx * (len(positions["bottom"]) - 1)/2
-
+    # IMPORTANT: Offset shoud put the labels on the 20x20 grid
+    to_grid = lambda x: 20 * math.floor(x / 20)
+    top_offset    = to_grid ( width/2  - dx * (len(positions["top"])    - 1 ) / 2 )
+    left_offset   = to_grid ( height/2 - dy * (len(positions["left"])   - 1 ) / 2 )
+    bottom_offset = to_grid ( width/2  - dx * (len(positions["bottom"]) - 1 ) / 2 )
 
     content.append(f"L 4 {x_base} {y_base} {x_base + width} {y_base} {{}}")
     content.append(f"L 4 {x_base} {y_base} {x_base} {y_base + height} {{}}")
@@ -98,11 +99,11 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
         # 2 -> 0.5
         # 3 -> 1
         L_start = (
-            x_base + width/2 - top_offset + i*dx,
+            x_base + top_offset + i*dx,
             y_base
         )
         L_end = (
-            x_base + width/2 - top_offset + i*dx,
+            x_base + top_offset + i*dx,
             y_base - 20 # To go up, subtract
         )
 
@@ -117,11 +118,11 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
         # ■ -- | P3
         L_start = (
             x_base,
-            y_base + height/2 - left_offset + i*dy# - dy*len(positions["left"])/2 + i*dy # + top_names_spacing + i*dy
+            y_base + left_offset + i*dy# - dy*len(positions["left"])/2 + i*dy # + top_names_spacing + i*dy
         )
         L_end = (
             x_base - dx,
-            y_base + height/2 - left_offset + i*dy# - dy*len(positions["left"])/2 + i*dy # + top_names_spacing + i*dy
+            y_base + left_offset + i*dy# - dy*len(positions["left"])/2 + i*dy # + top_names_spacing + i*dy
         )
 
         content.append(f"L 7 {L_start[0]} {L_start[1]} {L_end[0]} {L_end[1]} {{}}")
@@ -135,11 +136,11 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
         # |    |    |
         # ■    ■    ■
         L_start = (
-            x_base + width/2 - bottom_offset + i*dx,
+            x_base + bottom_offset + i*dx,
             y_base + height
         )
         L_end = (
-            x_base + width/2 - bottom_offset + i*dx,
+            x_base + bottom_offset + i*dx,
             y_base + height + 20 # To go down, add
         )
 

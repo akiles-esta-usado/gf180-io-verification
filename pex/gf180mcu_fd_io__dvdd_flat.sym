@@ -4,23 +4,23 @@ G {}
 K {type=subcircuit
 format="@name @pinlist @symname"
 template="name=x1"
-spice_sym_def="tcleval( .include [abs_sym_path gf180mcu_fd_io_pex.ngspice] )"
+spice_sym_def="tcleval( .include [abs_sym_path gf180mcu_fd_io__dvdd.pex] )"
 }
 V {}
 S {}
 E {}
-L 4 -125.0 -50.0 125.0 -50.0 {}
-L 4 -125.0 -50.0 -125.0 50.0 {}
-L 4 125.0 -50.0 125.0 50.0 {}
-L 4 -125.0 50.0 125.0 50.0 {}
-T {@symname} -120.0 -10.0 0 0 0.3 0.3 {font=Monospace}
-T {@name}    125.0 -60.0 0 0 0.2 0.2 {font=Monospace}
-L 7 0.0 -50.0 0.0 -70.0 {}
-B 5 -2.5 -72.5 2.5 -67.5 {name=DVDD dir=inout}
-T {DVDD} -5.0 -45.0 3 1 0.2 0.2 {font=Monospace}
-L 7 -10.0 50.0 -10.0 70.0 {}
-B 5 -12.5 67.5 -7.5 72.5 {name=VSS dir=inout}
-T {VSS} -15.0 45.0 3 0 0.2 0.2 {font=Monospace}
-L 7 10.0 50.0 10.0 70.0 {}
-B 5 7.5 67.5 12.5 72.5 {name=DVSS dir=inout}
-T {DVSS} 5.0 45.0 3 0 0.2 0.2 {font=Monospace}
+L 4 0 0 250 0 {}
+L 4 0 0 0 100 {}
+L 4 250 0 250 100 {}
+L 4 0 100 250 100 {}
+T {@symname} 5.0 40.0 0 0 0.3 0.3 {font=Monospace}
+T {@name}    250 -10 0 0 0.2 0.2 {font=Monospace}
+L 7 120 0 120 -20 {}
+B 5 117.5 -22.5 122.5 -17.5 {name=DVDD dir=inout}
+T {DVDD} 115 5 3 1 0.2 0.2 {font=Monospace}
+L 7 100 100 100 120 {}
+B 5 97.5 117.5 102.5 122.5 {name=VSS dir=inout}
+T {VSS} 95 95 3 0 0.2 0.2 {font=Monospace}
+L 7 120 100 120 120 {}
+B 5 117.5 117.5 122.5 122.5 {name=DVSS dir=inout}
+T {DVSS} 115 95 3 0 0.2 0.2 {font=Monospace}
