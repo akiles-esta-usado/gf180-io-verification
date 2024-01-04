@@ -71,7 +71,7 @@ value="
 .control
 tran 1u 20u
 remzerovec
-*plot vdd
+plot vdd
 write asig_5p0.raw
 .endc
 

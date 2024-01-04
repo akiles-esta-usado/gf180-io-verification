@@ -1,0 +1,43 @@
+** sch_path: /workspaces/gf180-io-verification/test/in_c2/in_c2.sch
+
+.include /home/designer/.volare/gf180mcuD/libs.tech/ngspice/design.ngspice
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice diode_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice res_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice bjt_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice mimcap_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice moscap_typical
+
+
+.param T=100ns
+
+vpad PAD n1 pulse(0 3.3 {T/2} 50ps 50ps {T/2} {T} 1)
+vpad2 n1 n2 pulse(0 5 {3*T/2} 50ps 50ps {T/2} {T} 1)
+vpad3 n2 n3 pulse(0 2.5 {5*T/2} 50ps 50ps {T/2} {T} 1)
+vpad4 n3 0 pulse(0 1 {7*T/2} 50ps 50ps {T/2} {T} 1)
+
+vpu PU 0 pulse(0 5 225ns 50ps 50ps {T/2} {T} 1)
+vpd PD 0 pulse(0 5 325ns 50ps 50ps {T/2} {T} 1)
+
+vdd0 DVDD 0 pulse(5 0 1ns 50ps 50ps 1ns 2ns 1)
+vdd1 VDD 0 pulse(5 0 1ns 50ps 50ps 1ns 2ns 1)
+
+.control
+save all
+tran 25ns 500ns
+remzerovec
+write in_c2.raw
+plot PAD
+plot Y
+.endc
+
+
+.subckt in_c2 DVSS VSS DVDD VDD PU PD Y PAD
+*.PININFO DVSS:B VSS:B DVDD:B VDD:B PU:B PD:B Y:B PAD:B
+x2 DVDD VDD PAD Y PD PU DVSS VSS gf180mcu_fd_io__in_c_flat
+.ends
+
+* expanding   symbol:  gf180mcu_fd_io__in_c_flat.sym # of pins=8
+** sym_path: /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__in_c_flat.sym
+.include /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__in_c.pex
+.end

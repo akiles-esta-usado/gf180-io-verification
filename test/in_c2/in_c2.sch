@@ -47,10 +47,6 @@ unitx=1
 logx=0
 logy=0
 }
-N 1030 100 1070 100 {
-lab=GND}
-N 1050 100 1050 120 {
-lab=GND}
 C {devices/code.sym} 950 -180 0 0 {name=MODELS
 only_toplevel=true
 place=header
@@ -85,15 +81,12 @@ vdd1 VDD 0 pulse(5 0 1ns 50ps 50ps 1ns 2ns 1)
 save all
 tran 25ns 500ns 
 remzerovec
-write in_c.raw
+write in_c2.raw
 plot PAD
 plot Y
 .endc
 
 "}
-C {devices/gnd.sym} 1050 120 0 0 {name=l4 lab=GND}
-C {devices/iopin.sym} 1030 100 2 0 {name=p3 lab=VSS}
-C {devices/iopin.sym} 1070 100 0 0 {name=p4 lab=DVSS}
 C {gf180mcu_fd_io__in_c_flat.sym} 1360 -340 0 0 {name=x2}
 C {devices/iopin.sym} 1500 -160 1 0 {name=p5 lab=DVSS}
 C {devices/iopin.sym} 1520 -160 1 0 {name=p6 lab=VSS}

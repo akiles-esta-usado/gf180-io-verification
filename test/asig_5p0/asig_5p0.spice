@@ -1,0 +1,33 @@
+** sch_path: /workspaces/gf180-io-verification/test/asig_5p0/asig_5p0.sch
+
+.include /home/designer/.volare/gf180mcuD/libs.tech/ngspice/design.ngspice
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice diode_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice res_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice bjt_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice mimcap_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice moscap_typical
+
+
+.control
+tran 1u 20u
+remzerovec
+plot vdd
+write asig_5p0.raw
+.endc
+
+
+.subckt asig_5p0 ASIG5V DVDD VSS DVSS DVSS VSS DVDD ASIG5V VDD
+*.PININFO ASIG5V:B DVDD:B VSS:B DVSS:B DVSS:B VSS:B DVDD:B ASIG5V:B VDD:B
+V1 ASIG5V GND 3.3
+V2 DVDD GND 3.3
+V3 VSS GND 0
+V4 DVSS GND 0
+x1 VDD DVDD ASIG5V DVSS VSS gf180mcu_fd_io__asig_5p0_flat
+.ends
+
+* expanding   symbol:  gf180mcu_fd_io__asig_5p0_flat.sym # of pins=5
+** sym_path: /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__asig_5p0_flat.sym
+.include /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__asig_5p0.pex
+.GLOBAL GND
+.end

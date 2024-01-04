@@ -12,6 +12,14 @@ PDK=gf180mcuD
 # - TOP/TOP.gds
 TOP=
 
+
+# Utility variables
+###################
+
+TIMESTAMP_DAY=$$(date +%Y-%m-%d)
+TIMESTAMP_TIME=$$(date +%H-%M-%S)
+NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
+
 ifeq (,$(TOP))
 $(warning TOP not defined, using asig_5p0)
 TOP=asig_5p0
@@ -19,9 +27,10 @@ endif
 
 CELL_DIR=$(abspath ./globalfoundries-pdk-libs-gf180mcu_fd_io/cells)
 
-TOP_DIR:=$(abspath $(dir $(CELL_DIR)/$(TOP)))/$(TOP)
-ifeq (,$(wildcard $(TOP_DIR)))
-$(error directory $(TOP_DIR) don't exist)
+# Klayout analysis are done in the GDS directory, inside gf*_fd_io folder.
+TOP_DIR:=$(realpath $(CELL_DIR)/$(TOP))
+ifeq (,$(TOP_DIR))
+$(warning TOP_DIR variable can't be determined)
 endif
 
 PEX_DIR=$(abspath ./pex)
@@ -37,9 +46,6 @@ endif
 # TODO: Are we catching stderr into log files?
 
 
-TIMESTAMP_DAY=$$(date +%Y-%m-%d)
-TIMESTAMP_TIME=$$(date +%H-%M-%S)
-
 
 # Getting source file
 #####################
@@ -49,7 +55,7 @@ TIMESTAMP_TIME=$$(date +%H-%M-%S)
 ALL_FILES:=$(wildcard $(CELL_DIR)/*) \
 		   $(wildcard $(CELL_DIR)/*/*) \
 		   $(wildcard $(PEX_DIR)/*) \
-		   $(wildcard test/*)
+		   $(wildcard test/*/*)
 
 ## 2. Filter by type #
 
@@ -91,31 +97,40 @@ CLEANABLE:= \
 
 ## 3. Files related with the TOP
 
-TOP_SCH:=$(filter %$(TOP).sch,$(SCH))
+TOP_SCH:=$(realpath $(filter %$(TOP).sch,$(SCH)))
 
-TOP_TB:=$(filter %$(TOP)-test.sch,$(TB))
+TOP_TB:=$(realpath $(filter %$(TOP)-test.sch,$(TB)))
 
-TOP_GDS:=$(filter %$(TOP)_5lm.gds,$(GDS))
+TOP_GDS:=$(realpath $(filter %$(TOP)_5lm.gds,$(GDS)))
 
-TOP_PEX:=$(filter %$(TOP).pex,$(PEX))
-TOP_PEX_SYM:=$(filter %$(TOP)_flat.sym,$(SYM))
+TOP_PEX:=$(realpath $(filter %$(TOP).pex,$(PEX)))
+TOP_PEX_SYM:=$(realpath $(filter %$(TOP)_flat.sym,$(SYM)))
 
-TOP_NETLIST_SCH:=$(filter %$(TOP).cdl,$(ALL_NETLIST))
-TOP_NETLIST_GDS:=$(filter %$(TOP)_5lm.cir,$(ALL_NETLIST))
+#TOP_NETLIST_SCH:=$(filter %$(TOP).cdl,$(ALL_NETLIST))
+# TOP_NETLIST_SCH have to meanings depending of what is TOP referencing:
+# TOP references a IO GDS: TOP_NETLIST_SCH has no meaning because we don't make lvs in this repo
+# TOP references a test: TOP_NETLIST_SCH references a tesbench netlist
+TOP_NETLIST_SCH:=$(realpath $(filter %$(TOP).spice,$(ALL_NETLIST)))
+TOP_NETLIST_GDS:=$(realpath $(filter %$(TOP)_5lm.cir,$(ALL_NETLIST)))
 
 
 # Relevant directories
 #################
 
 MAGIC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-$(TOP).log
-XSCHEM_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-$(TOP).log
-NETGEN_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-netgen-$(TOP).log
-KLAYOUT_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-$(TOP).log
-
 MAGIC_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-lvs-$(TOP).log
 MAGIC_PEX_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-pex-$(TOP).log
-XSCHEM_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-netlist-$(TOP).log
+
+XSCHEM_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-$(TOP).log
+XSCHEM_NETLIST_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-netlist-$(TOP).log
+
+NGSPICE_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-ngspice-$(TOP).log
+
+NETGEN_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-netgen-$(TOP).log
+
+KLAYOUT_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-$(TOP).log
 KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs-$(TOP).log
+
 
 # Configuration files
 #####################
@@ -141,7 +156,7 @@ RM=rm -rf
 XSCHEM=xschem --rcfile $(XSCHEM_RCFILE)
 XSCHEM_NETLIST=xschem --rcfile ./xschemrc \
 	--netlist \
-	--netlist_path $(TOP_DIR) \
+	--netlist_path $(dir $(TOP_SCH)) \
 	--netlist_filename $(TOP).spice \
 	--preinit 'set lvs_netlist 1' \
 	--no_x \
@@ -149,7 +164,7 @@ XSCHEM_NETLIST=xschem --rcfile ./xschemrc \
 
 XSCHEM_NETLIST_WITHOUT_SPICEPREFIX=xschem --rcfile ./xschemrc \
 	--netlist \
-	--netlist_path $(TOP_DIR) \
+	--netlist_path $(dir $(TOP_SCH)) \
 	--netlist_filename $(TOP).spice \
 	--preinit 'set lvs_netlist 1; set spiceprefix 0' \
 	--no_x \
@@ -161,6 +176,8 @@ MAGIC=PEX_DIR=$(PEX_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcf
 MAGIC_BATCH=$(MAGIC) -nowrapper -nowindow -D -dnull
 
 NETGEN=netgen -batch lvs
+
+NGSPICE=SPICE_USERINIT_DIR=$(PWD) ngspice -a --define=num_threads=$(NPROCS)
 
 ############
 ## Utilities
@@ -224,10 +241,24 @@ xschem-netlist:
 .PHONY: xschem-netlist-klayout-compatible
 xschem-netlist-klayout-compatible:
 	$(XSCHEM_NETLIST_WITHOUT_SPICEPREFIX) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
-	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_width/W/' $(TOP_DIR)/$(TOP).spice
-	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_length/L/' $(TOP_DIR)/$(TOP).spice
-	sed -i '/R.*ppoly/s/r_width/W/' $(TOP_DIR)/$(TOP).spice
-	sed -i '/R.*ppoly/s/r_length/L/' $(TOP_DIR)/$(TOP).spice
+	make TOP=$(TOP) xschem-netlist-klayout-compatible-clean
+
+.PHONY: xschem-netlist-klayout-compatible-clean
+xschem-netlist-klayout-compatible-clean:
+	# Old spice reference: $(TOP_DIR)/$(TOP).spice
+	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_width/W/' $(TOP_NETLIST_SCH)
+	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_length/L/' $(TOP_NETLIST_SCH)
+	sed -i '/R.*ppoly/s/r_width/W/' $(TOP_NETLIST_SCH)
+	sed -i '/R.*ppoly/s/r_length/L/' $(TOP_NETLIST_SCH)
+
+
+##########
+## Ngspice
+##########
+
+.PHONY: ngspice-sim
+ngspice-sim: xschem-netlist
+	cd $(dir $(TOP_SCH)) && $(NGSPICE) $(TOP_NETLIST_SCH) |& tee $(NGSPICE_LOG)
 
 
 ##########
