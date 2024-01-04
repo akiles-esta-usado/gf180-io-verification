@@ -7,7 +7,7 @@ echo ******
 
 *set debug                ; yield analysis of each command in .spiceinit and .control
 *set ngdebug   ; Additional warning messages, additional files with spice processing information
-set filetype = ascii
+*set filetype = ascii    ; Files are TOO BIG to use this parameter
 set ng_nomodcheck        ; don't check the model parameters
 set ngbehavior=hsa     ; set compatibility for reading PDK libs
 

@@ -32,10 +32,17 @@ plot Y
 .endc
 
 
-.subckt in_c DVSS VSS DVDD VDD PU PD Y PAD
-*.PININFO DVSS:B VSS:B DVDD:B VDD:B PU:B PD:B Y:B PAD:B
+**.subckt in_c DVSS VSS DVDD VDD PU PD Y PAD
+*.iopin DVSS
+*.iopin VSS
+*.iopin DVDD
+*.iopin VDD
+*.iopin PU
+*.iopin PD
+*.iopin Y
+*.iopin PAD
 x2 DVDD VDD PAD Y PD PU DVSS VSS gf180mcu_fd_io__in_c_flat
-.ends
+**.ends
 
 * expanding   symbol:  gf180mcu_fd_io__in_c_flat.sym # of pins=8
 ** sym_path: /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__in_c_flat.sym

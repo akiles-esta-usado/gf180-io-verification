@@ -153,20 +153,12 @@ RM=rm -rf
 
 # https://xschem.sourceforge.io/stefan/xschem_man/developer_info.html
 #--preinit 'set lvs_netlist 1; set spiceprefix 0'
-XSCHEM=xschem --rcfile $(XSCHEM_RCFILE)
-XSCHEM_NETLIST=xschem --rcfile ./xschemrc \
+XSCHEM=xschem --rcfile $(XSCHEM_RCFILE) \
 	--netlist \
 	--netlist_path $(dir $(TOP_SCH)) \
-	--netlist_filename $(TOP).spice \
-	--preinit 'set lvs_netlist 1' \
-	--no_x \
-	--quit
+	--netlist_filename $(TOP).spice
 
-XSCHEM_NETLIST_WITHOUT_SPICEPREFIX=xschem --rcfile ./xschemrc \
-	--netlist \
-	--netlist_path $(dir $(TOP_SCH)) \
-	--netlist_filename $(TOP).spice \
-	--preinit 'set lvs_netlist 1; set spiceprefix 0' \
+XSCHEM_BATCH=$(XSCHEM) \
 	--no_x \
 	--quit
 
@@ -218,34 +210,33 @@ gen-sym:
 #########
 
 
-.PHONY:xschem
+.PHONY: xschem
 xschem:
-	$(XSCHEM) $(TOP_SCH)
-
-
-.PHONY: xschem-sch
-xschem-sch:
 	$(XSCHEM) $(TOP_SCH) |& tee $(XSCHEM_LOG)
-
-
-.PHONY: xschem-tb
-xschem-tb:
-	$(XSCHEM) $(TOP_TB) |& tee $(XSCHEM_LOG)
 
 
 .PHONY: xschem-netlist
 xschem-netlist:
-	$(XSCHEM_NETLIST) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
+	$(XSCHEM_BATCH) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
 
 
-.PHONY: xschem-netlist-klayout-compatible
-xschem-netlist-klayout-compatible:
-	$(XSCHEM_NETLIST_WITHOUT_SPICEPREFIX) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
-	make TOP=$(TOP) xschem-netlist-klayout-compatible-clean
+.PHONY: xschem-netlist-lvs
+xschem-netlist-lvs:
+	$(XSCHEM_BATCH) \
+		--preinit 'set lvs_netlist 1' \
+		$(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
 
-.PHONY: xschem-netlist-klayout-compatible-clean
-xschem-netlist-klayout-compatible-clean:
-	# Old spice reference: $(TOP_DIR)/$(TOP).spice
+
+.PHONY: xschem-netlist-lvs-klayout
+xschem-netlist-lvs-klayout:
+	$(XSCHEM_BATCH) \
+		--preinit 'set lvs_netlist 1; set spiceprefix 0' \
+		$(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
+
+	make TOP=$(TOP) xschem-netlist-lvs-klayout-clean
+
+.PHONY: xschem-netlist-lvs-klayout-clean
+xschem-netlist-lvs-klayout-clean:
 	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_width/W/' $(TOP_NETLIST_SCH)
 	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_length/L/' $(TOP_NETLIST_SCH)
 	sed -i '/R.*ppoly/s/r_width/W/' $(TOP_NETLIST_SCH)
@@ -265,9 +256,6 @@ ngspice-sim: xschem-netlist
 ## Klayout
 ##########
 
-# TODO: This rules are not verified
-# TODO: Klayout DRC
-# TODO: Klayout LVS
 
 .PHONY: klayout
 klayout: klayout-view
