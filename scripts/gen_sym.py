@@ -2,15 +2,45 @@ from pathlib import Path
 import math
 
 def get_subckt_declarations(netlist: Path | str) -> list[str]:
+    """This function iterates for all lines in file, joins the subckt declarations and returns them"""
 
-    declarations = list()
+    declarations: list[str] = list()
+    curr_declaration: str = ""
+
+    in_subckt_declaration: bool = False
 
     with open(netlist, "r") as f:
         for line in f:
-            if not line.startswith(".subckt"):
-                continue
+            line = line.strip() # Remove whitespaces
 
-            declarations.append(line)
+            if not in_subckt_declaration:
+
+                if line.lower().startswith(".subckt"):
+                    print(f"{line = }")
+                    in_subckt_declaration = True
+                    curr_declaration = line
+
+            else: # in subckt declaration
+                print(f"{line = }")
+
+                if line.lower().startswith("+"):
+                    # Continuation
+                    curr_declaration = f"{curr_declaration} {line[1::].strip()}"
+
+                elif line.lower().startswith("*"):
+                    # Comment or empty line
+                    continue
+
+                elif line.lower()[0] in {"x", "d", "c", "r"}:
+                    # Instance declaration.
+                    declarations.append(curr_declaration)
+                    in_subckt_declaration = False
+                    continue
+
+                else:
+                    declarations.append(curr_declaration)
+                    in_subckt_declaration = False
+                    continue
 
     return declarations
 
@@ -159,6 +189,9 @@ def generate_sym(netlist: str, outdir: str):
         return
 
     subckts = get_subckt_declarations(netlist_path)
+    print(f"subckts found:")
+    for subckt in subckts:
+        print(f'- {subckt}')
 
     ports = get_ports(subckts[0])
 
@@ -178,5 +211,7 @@ if __name__ == "__main__":
 
     netlist_path = Path(sys.argv[1])
     sym_directory = Path(sys.argv[2])
+
+    print(f"Processing file {netlist_path}. Storing results on {sym_directory}")
 
     generate_sym(netlist_path, sym_directory)

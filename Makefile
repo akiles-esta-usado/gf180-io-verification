@@ -114,7 +114,7 @@ KLAYOUT_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-$(TOP).log
 
 MAGIC_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-lvs-$(TOP).log
 MAGIC_PEX_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-magic-pex-$(TOP).log
-XSCHEM_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-lvs-$(TOP).log
+XSCHEM_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-xschem-netlist-$(TOP).log
 KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs-$(TOP).log
 
 # Configuration files
@@ -190,6 +190,12 @@ print-vars : \
 	print-TOP_NETLIST_GDS
 
 
+.PHONY: gen-sym
+gen-sym:
+	@python scripts/gen_sym.py $(TOP_PEX) $(PEX_DIR)
+	#$(XSCHEM) $(TOP_PEX_SYM)
+
+
 #########
 ## Xschem
 #########
@@ -210,24 +216,18 @@ xschem-tb:
 	$(XSCHEM) $(TOP_TB) |& tee $(XSCHEM_LOG)
 
 
-.PHONY: xschem-lvs
-xschem-lvs:
+.PHONY: xschem-netlist
+xschem-netlist:
 	$(XSCHEM_NETLIST) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
 
 
-.PHONY: xschem-lvs-klayout-compatible
-xschem-lvs-klayout-compatible:
+.PHONY: xschem-netlist-klayout-compatible
+xschem-netlist-klayout-compatible:
 	$(XSCHEM_NETLIST_WITHOUT_SPICEPREFIX) $(TOP_SCH) |& tee $(XSCHEM_LVS_LOG)
 	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_width/W/' $(TOP_DIR)/$(TOP).spice
 	sed -i '/C.*cap_mim_2f0_m4m5_noshield/s/c_length/L/' $(TOP_DIR)/$(TOP).spice
 	sed -i '/R.*ppoly/s/r_width/W/' $(TOP_DIR)/$(TOP).spice
 	sed -i '/R.*ppoly/s/r_length/L/' $(TOP_DIR)/$(TOP).spice
-
-
-.PHONY: xschem-make-sym
-xschem-make-sym:
-	python scripts/gen_sym.py $(TOP_PEX) $(PEX_DIR)
-	#$(XSCHEM) $(TOP_PEX_SYM)
 
 
 ##########
@@ -380,7 +380,7 @@ magic-lvs:
 .PHONY: magic-pex
 magic-pex:
 	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX) |& tee $(MAGIC_PEX_LOG)
-	make TOP=$(TOP) xschem-make-sym
+	make TOP=$(TOP) gen-sym
 
 
 .PHONY: magic-pex-all
@@ -406,13 +406,13 @@ magic-pex-all:
 #########
 
 .PHONY: netgen-lvs
-netgen-lvs: magic-lvs xschem-lvs
+netgen-lvs: magic-lvs xschem-netlist
 	cd $(TOP_DIR) && $(NETGEN) "$(notdir $(TOP_NETLIST_GDS)) $(TOP)" "$(notdir $(TOP_NETLIST_SCH)) $(TOP)" $(NETGEN_RCFILE) |& tee $(NETGEN_LOG) || true
 	cd $(TOP_DIR) && grep "Netlist" comp.out
 
 
 .PHONY: netgen-magic-lvs
-netgen-magic-lvs: magic-lvs xschem-lvs
+netgen-magic-lvs: magic-lvs xschem-netlist
 	cd $(TOP_DIR) && $(NETGEN) "$(notdir $(TOP_NETLIST_GDS)) $(TOP)_flat" "$(notdir $(TOP_NETLIST_SCH)) $(TOP)" $(NETGEN_RCFILE) |& tee $(NETGEN_LOG) || true
 	cd $(TOP_DIR) && grep "Netlist" comp.out
 
