@@ -71,7 +71,7 @@ def position_ports(ports: list[str]) -> dict[str, list[str]]:
     return positions
 
 
-def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
+def draw_sym(netlist_name: str, positions: dict[str, list[str]]) -> str:
     content = [
         'v {xschem version=3.4.4 file_version=1.2',
         '}',
@@ -79,12 +79,25 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
         'K {type=subcircuit',
         'format="@name @pinlist @symname"',
         'template="name=x1"',
-        f'spice_sym_def="tcleval( .include [abs_sym_path {netlist_name}.pex] )"',
+        f'spice_sym_def="tcleval( .include [abs_sym_path {netlist_name}] )"',
         '}',
         'V {}',
         'S {}',
         'E {}',
     ]
+    #print(f"{netlist_name = }")
+
+    netlist_type = netlist_name.split('/')[0]
+    symbol_label = "{" + netlist_type + " @symname" + "}"
+    #print(f"{symbol_label = }")
+    
+    # Removing the termination .cir / .pex
+    netlist_name = netlist_name.split(".")[0]
+    
+    # Removing the lvs/ or pex/
+    netlist_name = netlist_name.split("/")[1]
+    #print(f"{netlist_name = }")
+
 
     dx = 20
     dy = 20
@@ -99,7 +112,7 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
     max_lateral_name_spacing = max(left_names_spacing, right_names_spacing)
 
     name_spacing = 20 if lateral_port_spacing < 40 else 0
-    len_symname = 10*len(f'{netlist_name}_flat')
+    len_symname = 10*len(f'{netlist_type} {netlist_name}_flat')
 
     height = top_names_spacing + lateral_port_spacing + bottom_names_spacing + name_spacing
     width = 2*max_lateral_name_spacing + len_symname
@@ -117,7 +130,7 @@ def draw_sym(netlist_name :str, positions: dict[str, list[str]]) -> str:
     content.append(f"L 4 {x_base} {y_base} {x_base} {y_base + height} {{}}")
     content.append(f"L 4 {x_base + width} {y_base} {x_base + width} {y_base + height} {{}}")
     content.append(f"L 4 {x_base} {y_base + height} {x_base + width} {y_base + height} {{}}")
-    content.append(f"T {{@symname}} {x_base + width/2 - len_symname /2 + 5} {y_base + height/2 - 10} 0 0 0.3 0.3 {{font=Monospace}}")
+    content.append(f"T {symbol_label} {x_base + width/2 - len_symname /2 + 5} {y_base + height/2 - 10} 0 0 0.3 0.3 {{font=Monospace}}")
     content.append(f"T {{@name}}    {x_base + width} {y_base-10} 0 0 0.2 0.2 {{font=Monospace}}")
 
     for i, port in enumerate(positions["top"]):
@@ -197,7 +210,15 @@ def generate_sym(netlist: str, outdir: str):
 
     positions = position_ports(ports)
 
-    sym = draw_sym(netlist_path.stem, positions)
+    # Every LVS/PEX circuit should differenciate in the symbol name
+    # lvs/symname, pex/symname
+    # print(f"{netlist_path.name = }")
+    # print(f"{netlist_path.parent.name = }")
+    # print(f"{netlist_path.parent.name}/{netlist_path.name}")
+    # print(f"{type(netlist_path) = }")
+
+    #sym = draw_sym(netlist_path.name, positions)
+    sym = draw_sym(f"{netlist_path.parent.name}/{netlist_path.name}", positions)
 
     sym_path = Path(outdir) / f"{str(netlist_path.stem)}_flat.sym"
     sym_path.write_text("\n".join(sym))

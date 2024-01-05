@@ -87,11 +87,11 @@ plot Y
 .endc
 
 "}
-C {gf180mcu_fd_io__in_c_flat.sym} 1360 -340 0 0 {name=x2}
-C {devices/iopin.sym} 1500 -160 1 0 {name=p5 lab=DVSS}
-C {devices/iopin.sym} 1520 -160 1 0 {name=p6 lab=VSS}
-C {devices/iopin.sym} 1500 -360 3 0 {name=p7 lab=DVDD}
-C {devices/iopin.sym} 1520 -360 3 0 {name=p8 lab=VDD}
+C {lvs/gf180mcu_fd_io__in_c_flat.sym} 1360 -340 0 0 {name=x2}
+C {devices/iopin.sym} 1520 -160 1 0 {name=p5 lab=DVSS}
+C {devices/iopin.sym} 1540 -160 1 0 {name=p6 lab=VSS}
+C {devices/iopin.sym} 1520 -360 3 0 {name=p7 lab=DVDD}
+C {devices/iopin.sym} 1540 -360 3 0 {name=p8 lab=VDD}
 C {devices/iopin.sym} 1340 -240 2 0 {name=p12 lab=PU}
 C {devices/iopin.sym} 1340 -260 2 0 {name=p13 lab=PD}
 C {devices/iopin.sym} 1340 -280 2 0 {name=p14 lab=Y}

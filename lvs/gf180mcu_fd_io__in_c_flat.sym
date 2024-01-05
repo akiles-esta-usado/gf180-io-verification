@@ -4,7 +4,7 @@ G {}
 K {type=subcircuit
 format="@name @pinlist @symname"
 template="name=x1"
-spice_sym_def="tcleval( .include [abs_sym_path pex/gf180mcu_fd_io__in_c.pex] )"
+spice_sym_def="tcleval( .include [abs_sym_path lvs/gf180mcu_fd_io__in_c.cir] )"
 }
 V {}
 S {}
@@ -13,7 +13,7 @@ L 4 0 0 350 0 {}
 L 4 0 0 0 160 {}
 L 4 350 0 350 160 {}
 L 4 0 160 350 160 {}
-T {pex @symname} 35.0 70.0 0 0 0.3 0.3 {font=Monospace}
+T {lvs @symname} 35.0 70.0 0 0 0.3 0.3 {font=Monospace}
 T {@name}    350 -10 0 0 0.2 0.2 {font=Monospace}
 L 7 160 0 160 -20 {}
 B 5 157.5 -22.5 162.5 -17.5 {name=DVDD dir=inout}

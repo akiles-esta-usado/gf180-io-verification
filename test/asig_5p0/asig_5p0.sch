@@ -88,12 +88,12 @@ C {devices/iopin.sym} 850 20 0 0 {name=p1 lab=ASIG5V}
 C {devices/iopin.sym} 930 20 0 0 {name=p2 lab=DVDD}
 C {devices/iopin.sym} 1010 20 0 0 {name=p3 lab=VSS}
 C {devices/iopin.sym} 1090 20 0 0 {name=p4 lab=DVSS}
-C {gf180mcu_fd_io__asig_5p0_flat.sym} 1290 -310 0 0 {name=x1}
-C {devices/iopin.sym} 1470 -170 1 0 {name=p5 lab=DVSS}
-C {devices/iopin.sym} 1490 -170 1 0 {name=p6 lab=VSS}
-C {devices/iopin.sym} 1490 -330 3 0 {name=p7 lab=DVDD}
+C {lvs/gf180mcu_fd_io__asig_5p0_flat.sym} 1290 -310 0 0 {name=x1}
+C {devices/iopin.sym} 1490 -170 1 0 {name=p5 lab=DVSS}
+C {devices/iopin.sym} 1510 -170 1 0 {name=p6 lab=VSS}
+C {devices/iopin.sym} 1510 -330 3 0 {name=p7 lab=DVDD}
 C {devices/iopin.sym} 1270 -250 2 0 {name=p8 lab=ASIG5V}
-C {devices/iopin.sym} 1470 -330 3 0 {name=p9 lab=VDD}
+C {devices/iopin.sym} 1490 -330 3 0 {name=p9 lab=VDD}
 C {devices/launcher.sym} 1900 -380 0 0 {name=h5
 descr="load waves" 
 tclcommand="xschem raw_read $netlist_dir/asig_5p0.raw tran"

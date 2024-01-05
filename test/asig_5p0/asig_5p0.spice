@@ -34,8 +34,8 @@ V4 DVSS GND 0
 x1 VDD DVDD ASIG5V DVSS VSS gf180mcu_fd_io__asig_5p0_flat
 **.ends
 
-* expanding   symbol:  gf180mcu_fd_io__asig_5p0_flat.sym # of pins=5
-** sym_path: /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__asig_5p0_flat.sym
-.include /workspaces/gf180-io-verification/pex/gf180mcu_fd_io__asig_5p0.pex
+* expanding   symbol:  lvs/gf180mcu_fd_io__asig_5p0_flat.sym # of pins=5
+** sym_path: /workspaces/gf180-io-verification/lvs/gf180mcu_fd_io__asig_5p0_flat.sym
+.include /workspaces/gf180-io-verification/lvs/gf180mcu_fd_io__asig_5p0.cir
 .GLOBAL GND
 .end

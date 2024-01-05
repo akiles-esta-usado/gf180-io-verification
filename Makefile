@@ -38,6 +38,11 @@ ifeq (,$(wildcard $(PEX_DIR)))
 $(shell mkdir -p $(PEX_DIR))
 endif
 
+LVS_DIR=$(abspath ./lvs)
+ifeq (,$(wildcard $(LVS_DIR)))
+$(shell mkdir -p $(LVS_DIR))
+endif
+
 LOGDIR=$(abspath logs)/$(TIMESTAMP_DAY)
 ifeq (,$(wildcard $(LOGDIR)))
 $(shell mkdir -p $(LOGDIR))
@@ -55,6 +60,7 @@ endif
 ALL_FILES:=$(wildcard $(CELL_DIR)/*) \
 		   $(wildcard $(CELL_DIR)/*/*) \
 		   $(wildcard $(PEX_DIR)/*) \
+		   $(wildcard $(LVS_DIR)/*) \
 		   $(wildcard test/*/*)
 
 ## 2. Filter by type #
@@ -111,7 +117,9 @@ TOP_PEX_SYM:=$(realpath $(filter %$(TOP)_flat.sym,$(SYM)))
 # TOP references a IO GDS: TOP_NETLIST_SCH has no meaning because we don't make lvs in this repo
 # TOP references a test: TOP_NETLIST_SCH references a tesbench netlist
 TOP_NETLIST_SCH:=$(realpath $(filter %$(TOP).spice,$(ALL_NETLIST)))
-TOP_NETLIST_GDS:=$(realpath $(filter %$(TOP)_5lm.cir,$(ALL_NETLIST)))
+TOP_NETLIST_GDS:=$(realpath $(filter %$(TOP).cir,$(ALL_NETLIST))) ## Add the _5lm into this name
+TOP_NETLIST_PEX:=$(realpath $(filter %$(TOP).pex,$(ALL_NETLIST)))
+TOP_NETLIST_PEX_SYM:=$(realpath $(filter %$(TOP)_flat.sym,$(SYM)))
 
 
 # Relevant directories
@@ -139,8 +147,8 @@ KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs-$(TOP).log
 XSCHEM_RCFILE=$(realpath ./xschemrc)
 
 MAGIC_RCFILE=$(realpath ./magicrc)
-MAGIC_LVS=$(realpath scripts/magic_lvs.tcl)
-MAGIC_PEX=$(realpath scripts/magic_pex.tcl)
+MAGIC_LVS_SCRIPT=$(realpath scripts/magic_lvs.tcl)
+MAGIC_PEX_SCRIPT=$(realpath scripts/magic_pex.tcl)
 
 NETGEN_RCFILE=$(PDK_ROOT)/$(PDK)/libs.tech/netgen/setup.tcl
 
@@ -164,7 +172,7 @@ XSCHEM_BATCH=$(XSCHEM) \
 
 KLAYOUT=klayout -t -d 1
 
-MAGIC=PEX_DIR=$(PEX_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
+MAGIC=PEX_DIR=$(PEX_DIR) LVS_DIR=$(LVS_DIR) LAYOUT=$(TOP_GDS) TOP=gf180mcu_fd_io__$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
 MAGIC_BATCH=$(MAGIC) -nowrapper -nowindow -D -dnull
 
 NETGEN=netgen -batch lvs
@@ -195,13 +203,21 @@ print-vars : \
 	print-TOP_SCH \
 	print-TOP_TB \
 	print-TOP_GDS \
+	print-TOP_PEX \
  	print-TOP_NETLIST_SCH \
-	print-TOP_NETLIST_GDS
+	print-TOP_NETLIST_GDS \
+	print-TOP_NETLIST_PEX
 
 
 .PHONY: gen-sym
 gen-sym:
-	@python scripts/gen_sym.py $(TOP_PEX) $(PEX_DIR)
+	python scripts/gen_sym.py $(TOP_PEX) $(PEX_DIR)
+	#$(XSCHEM) $(TOP_PEX_SYM)
+
+
+.PHONY: gen-lvs-sym
+gen-lvs-sym:
+	python scripts/gen_sym.py $(TOP_NETLIST_GDS) $(LVS_DIR)
 	#$(XSCHEM) $(TOP_PEX_SYM)
 
 
@@ -319,6 +335,20 @@ klayout-lvs-only:
 		--combine || true
 
 
+# .PHONY: klayout-lvs-cir
+# klayout-lvs-cir:
+# 	python $(KLAYOUT_HOME)/lvs/run_lvs.py \
+# 		--variant=D \
+# 		--run_mode=flat \
+# 		--verbose \
+# 		--run_dir=$(TOP_DIR) \
+# 		--layout=$(TOP_GDS) \
+# 		--netlist=$(TOP_PEX) \
+# 		--top_lvl_pins \
+# 		--combine \
+# 		--net_only || true
+
+
 .PHONY: klayout-lvs
 klayout-lvs: klayout-lvs-only
 	make TOP=$(TOP) klayout-lvs-view
@@ -393,12 +423,13 @@ magic-edit:
 # Working on the TOP_DIR for simplicity, maybe we can change a internal variable to write all there.
 .PHONY: magic-lvs
 magic-lvs:
-	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_LVS) |& tee $(MAGIC_LVS_LOG)
+	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_LVS_SCRIPT) |& tee $(MAGIC_LVS_LOG)
+	make TOP=$(TOP) gen-lvs-sym
 
 
 .PHONY: magic-pex
 magic-pex:
-	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX) |& tee $(MAGIC_PEX_LOG)
+	cd $(TOP_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX_SCRIPT) |& tee $(MAGIC_PEX_LOG)
 	make TOP=$(TOP) gen-sym
 
 
@@ -419,6 +450,23 @@ magic-pex-all:
 	# make TOP=fill5 magic-pex
 	# make TOP=fillnc magic-pex
 
+
+.PHONY: magic-lvs-all
+magic-lvs-all:
+	make TOP=asig_5p0 magic-lvs
+	make TOP=bi_t magic-lvs
+	make TOP=in_c magic-lvs
+	make TOP=dvdd magic-lvs
+	make TOP=dvss magic-lvs
+	# make TOP=in_s magic-lvs
+	# make TOP=bi_24t magic-lvs
+	# make TOP=brk2 magic-lvs
+	# make TOP=brk5 magic-lvs
+	# make TOP=cor magic-lvs
+	# make TOP=fill1 magic-lvs
+	# make TOP=fill10 magic-lvs
+	# make TOP=fill5 magic-lvs
+	# make TOP=fillnc magic-lvs
 
 #########
 ## Netgen
