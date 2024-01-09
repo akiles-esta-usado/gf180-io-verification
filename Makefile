@@ -26,6 +26,7 @@ TOP=asig_5p0
 endif
 
 CELL_DIR=$(abspath ./globalfoundries-pdk-libs-gf180mcu_fd_io/cells)
+PADRING_DIR=$(abspath ./openfasoc-tapeouts/gf180mcu_padframe)
 
 # Klayout analysis are done in the GDS directory, inside gf*_fd_io folder.
 TOP_DIR:=$(realpath $(CELL_DIR)/$(TOP))
@@ -61,13 +62,16 @@ ALL_FILES:=$(wildcard $(CELL_DIR)/*) \
 		   $(wildcard $(CELL_DIR)/*/*) \
 		   $(wildcard $(PEX_DIR)/*) \
 		   $(wildcard $(LVS_DIR)/*) \
-		   $(wildcard test/*/*)
+		   $(wildcard test/*/*) \
+		   $(wildcard /*) \
+		   $(wildcard $(PADRING_DIR)/*) \
+		   $(wildcard $(PADRING_DIR)/tb/*) \
 
 ## 2. Filter by type #
 
 ALL_SCH:=$(filter %.sch,$(ALL_FILES))
 
-ALL_LAYOUT:=$(filter %5lm.gds,$(ALL_FILES))
+ALL_LAYOUT:=$(filter %.gds,$(ALL_FILES))
 
 ALL_NETLIST:= \
 	$(filter %.spice,$(ALL_FILES)) \
@@ -108,6 +112,10 @@ TOP_SCH:=$(realpath $(filter %$(TOP).sch,$(SCH)))
 TOP_TB:=$(realpath $(filter %$(TOP)-test.sch,$(TB)))
 
 TOP_GDS:=$(realpath $(filter %$(TOP)_5lm.gds,$(GDS)))
+ifeq (, $(TOP_GDS))
+TOP_GDS=$(realpath $(filter %$(TOP).gds,$(GDS)))
+endif
+
 
 TOP_PEX:=$(realpath $(filter %$(TOP).pex,$(PEX)))
 TOP_PEX_SYM:=$(realpath $(filter %$(TOP)_flat.sym,$(SYM)))
@@ -138,6 +146,7 @@ NETGEN_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-netgen-$(TOP).log
 
 KLAYOUT_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-$(TOP).log
 KLAYOUT_LVS_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-lvs-$(TOP).log
+KLAYOUT_DRC_LOG=$(LOGDIR)/$(TIMESTAMP_TIME)-klayout-drc_$(TOP).log
 
 
 # Configuration files
@@ -365,21 +374,21 @@ klayout-drc-view:
 
 .PHONY: klayout-drc-only
 klayout-drc-only:
-	$(RM) $(TOP_DIR)/*.lyrdb
+	$(RM) $(dir $(TOP_DIR))/*.lyrdb
 
 	python $(KLAYOUT_HOME)/drc/run_drc.py \
 		--path $(TOP_GDS) \
 		--variant=D \
-		--topcell=gf180mcu_fd_io__$(TOP) \
-		--run_dir=$(TOP_DIR) \
+		--topcell=$(basename $(notdir $(TOP_GDS))) \
+		--run_dir=$(dir $(TOP_DIR)) \
 		--run_mode=flat \
 		--antenna \
 		--density \
-		--verbose || true
+		--verbose || true |& tee $(KLAYOUT_DRC_LOG)
 
 	$(KLAYOUT) -b -r $(KLAYOUT_HOME)/drc/gf180mcuD_mr.drc \
 		-rd input=$(TOP_GDS) \
-		-rd topcell=gf180mcu_fd_io__$(TOP) \
+		-rd topcell=$(basename $(notdir $(TOP_GDS))) \
 		-rd report=precheck_$(TOP).lyrdb \
 		-rd conn_drc=true \
 		-rd split_deep=true \
@@ -391,7 +400,7 @@ klayout-drc-only:
 		-rd verbose=true \
 		-rd run_mode=flat \
 		-rd feol=true \
-		-rd beol=true || true
+		-rd beol=true || true |& tee $(KLAYOUT_DRC_LOG)
 
 
 .PHONY: klayout-drc
@@ -496,3 +505,8 @@ lvs: netgen-lvs
 
 .PHONY: pex
 pex: magic-pex
+
+
+#############
+# Quick fixes
+#############
