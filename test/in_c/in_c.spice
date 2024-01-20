@@ -45,6 +45,6 @@ x2 DVDD VDD PAD Y PD PU DVSS VSS gf180mcu_fd_io__in_c_flat
 **.ends
 
 * expanding   symbol:  lvs/gf180mcu_fd_io__in_c_flat.sym # of pins=8
-** sym_path: /workspaces/gf180-io-verification/lvs/gf180mcu_fd_io__in_c_flat.sym
-.include /workspaces/gf180-io-verification/lvs/gf180mcu_fd_io__in_c.cir
+** sym_path: /workspaces/gf180-io-verification/extraction/lvs/gf180mcu_fd_io__in_c_flat.sym
+.include /workspaces/gf180-io-verification/extraction/lvs/gf180mcu_fd_io__in_c.cir
 .end
