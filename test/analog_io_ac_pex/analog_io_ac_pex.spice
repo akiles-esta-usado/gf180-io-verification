@@ -1,0 +1,37 @@
+** sch_path: /workspaces/gf180-io-verification/test/analog_io_ac_pex/analog_io_ac_pex.sch
+**.subckt analog_io_ac_pex
+V1 DVDD GND 3
+V2 VDD GND 3
+V3 DVSS GND 0
+V4 VSS GND 0
+V5 net1 GND DC 3 AC 1
+R1 ASIG net1 1k m=1
+**** begin user architecture code
+
+
+.ac dec 100 1k 100G
+.save all
+.control
+run
+display
+plot PAD ASIG
+plot vdb(asig) vdb(pad)
+.endc
+
+
+
+.include /home/designer/.volare/gf180mcuD/libs.tech/ngspice/design.ngspice
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice diode_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice res_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice mimcap_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice moscap_typical
+
+
+.include ./gf180mcu_fd_io__asig_5p0_extracted.spice
+XDUT DVSS DVDD VSS VDD PAD ASIG gf180mcu_fd_io__asig_5p0_extracted
+
+**** end user architecture code
+**.ends
+.GLOBAL GND
+.end

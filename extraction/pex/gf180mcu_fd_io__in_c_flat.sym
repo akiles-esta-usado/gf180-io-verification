@@ -1,0 +1,41 @@
+v {xschem version=3.4.4 file_version=1.2
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist @symname"
+template="name=x1"
+spice_sym_def="tcleval( .include [abs_sym_path pex/gf180mcu_fd_io__in_c.pex] )"
+}
+V {}
+S {}
+E {}
+L 4 0 0 350 0 {}
+L 4 0 0 0 160 {}
+L 4 350 0 350 160 {}
+L 4 0 160 350 160 {}
+T {pex @symname} 35.0 70.0 0 0 0.3 0.3 {font=Monospace}
+T {@name}    350 -10 0 0 0.2 0.2 {font=Monospace}
+L 7 160 0 160 -20 {}
+B 5 157.5 -22.5 162.5 -17.5 {name=DVDD dir=inout}
+T {DVDD} 155 5 3 1 0.2 0.2 {font=Monospace}
+L 7 180 0 180 -20 {}
+B 5 177.5 -22.5 182.5 -17.5 {name=VDD dir=inout}
+T {VDD} 175 5 3 1 0.2 0.2 {font=Monospace}
+L 7 0 40 -20 40 {}
+B 5 -22.5 37.5 -17.5 42.5 {name=PAD dir=inout}
+T {PAD} 5 35 0 0 0.2 0.2 {font=Monospace}
+L 7 0 60 -20 60 {}
+B 5 -22.5 57.5 -17.5 62.5 {name=Y dir=inout}
+T {Y} 5 55 0 0 0.2 0.2 {font=Monospace}
+L 7 0 80 -20 80 {}
+B 5 -22.5 77.5 -17.5 82.5 {name=PD dir=inout}
+T {PD} 5 75 0 0 0.2 0.2 {font=Monospace}
+L 7 0 100 -20 100 {}
+B 5 -22.5 97.5 -17.5 102.5 {name=PU dir=inout}
+T {PU} 5 95 0 0 0.2 0.2 {font=Monospace}
+L 7 160 160 160 180 {}
+B 5 157.5 177.5 162.5 182.5 {name=DVSS dir=inout}
+T {DVSS} 155 155 3 0 0.2 0.2 {font=Monospace}
+L 7 180 160 180 180 {}
+B 5 177.5 177.5 182.5 182.5 {name=VSS dir=inout}
+T {VSS} 175 155 3 0 0.2 0.2 {font=Monospace}

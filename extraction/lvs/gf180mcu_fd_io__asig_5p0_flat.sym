@@ -1,0 +1,32 @@
+v {xschem version=3.4.4 file_version=1.2
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist @symname"
+template="name=x1"
+spice_sym_def="tcleval( .include [abs_sym_path lvs/gf180mcu_fd_io__asig_5p0.cir] )"
+}
+V {}
+S {}
+E {}
+L 4 0 0 450 0 {}
+L 4 0 0 0 120 {}
+L 4 450 0 450 120 {}
+L 4 0 120 450 120 {}
+T {lvs @symname} 65.0 50.0 0 0 0.3 0.3 {font=Monospace}
+T {@name}    450 -10 0 0 0.2 0.2 {font=Monospace}
+L 7 200 0 200 -20 {}
+B 5 197.5 -22.5 202.5 -17.5 {name=VDD dir=inout}
+T {VDD} 195 5 3 1 0.2 0.2 {font=Monospace}
+L 7 220 0 220 -20 {}
+B 5 217.5 -22.5 222.5 -17.5 {name=DVDD dir=inout}
+T {DVDD} 215 5 3 1 0.2 0.2 {font=Monospace}
+L 7 0 60 -20 60 {}
+B 5 -22.5 57.5 -17.5 62.5 {name=ASIG5V dir=inout}
+T {ASIG5V} 5 55 0 0 0.2 0.2 {font=Monospace}
+L 7 200 120 200 140 {}
+B 5 197.5 137.5 202.5 142.5 {name=VSS dir=inout}
+T {VSS} 195 115 3 0 0.2 0.2 {font=Monospace}
+L 7 220 120 220 140 {}
+B 5 217.5 137.5 222.5 142.5 {name=DVSS dir=inout}
+T {DVSS} 215 115 3 0 0.2 0.2 {font=Monospace}

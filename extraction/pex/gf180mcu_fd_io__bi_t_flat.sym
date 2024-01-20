@@ -1,0 +1,62 @@
+v {xschem version=3.4.4 file_version=1.2
+}
+G {}
+K {type=subcircuit
+format="@name @pinlist @symname"
+template="name=x1"
+spice_sym_def="tcleval( .include [abs_sym_path pex/gf180mcu_fd_io__bi_t.pex] )"
+}
+V {}
+S {}
+E {}
+L 4 0 0 390 0 {}
+L 4 0 0 0 300 {}
+L 4 390 0 390 300 {}
+L 4 0 300 390 300 {}
+T {pex @symname} 55.0 140.0 0 0 0.3 0.3 {font=Monospace}
+T {@name}    390 -10 0 0 0.2 0.2 {font=Monospace}
+L 7 180 0 180 -20 {}
+B 5 177.5 -22.5 182.5 -17.5 {name=DVDD dir=inout}
+T {DVDD} 175 5 3 1 0.2 0.2 {font=Monospace}
+L 7 200 0 200 -20 {}
+B 5 197.5 -22.5 202.5 -17.5 {name=VDD dir=inout}
+T {VDD} 195 5 3 1 0.2 0.2 {font=Monospace}
+L 7 0 40 -20 40 {}
+B 5 -22.5 37.5 -17.5 42.5 {name=PAD dir=inout}
+T {PAD} 5 35 0 0 0.2 0.2 {font=Monospace}
+L 7 0 60 -20 60 {}
+B 5 -22.5 57.5 -17.5 62.5 {name=SL dir=inout}
+T {SL} 5 55 0 0 0.2 0.2 {font=Monospace}
+L 7 0 80 -20 80 {}
+B 5 -22.5 77.5 -17.5 82.5 {name=A dir=inout}
+T {A} 5 75 0 0 0.2 0.2 {font=Monospace}
+L 7 0 100 -20 100 {}
+B 5 -22.5 97.5 -17.5 102.5 {name=Y dir=inout}
+T {Y} 5 95 0 0 0.2 0.2 {font=Monospace}
+L 7 0 120 -20 120 {}
+B 5 -22.5 117.5 -17.5 122.5 {name=PDRV1 dir=inout}
+T {PDRV1} 5 115 0 0 0.2 0.2 {font=Monospace}
+L 7 0 140 -20 140 {}
+B 5 -22.5 137.5 -17.5 142.5 {name=PDRV0 dir=inout}
+T {PDRV0} 5 135 0 0 0.2 0.2 {font=Monospace}
+L 7 0 160 -20 160 {}
+B 5 -22.5 157.5 -17.5 162.5 {name=PD dir=inout}
+T {PD} 5 155 0 0 0.2 0.2 {font=Monospace}
+L 7 0 180 -20 180 {}
+B 5 -22.5 177.5 -17.5 182.5 {name=CS dir=inout}
+T {CS} 5 175 0 0 0.2 0.2 {font=Monospace}
+L 7 0 200 -20 200 {}
+B 5 -22.5 197.5 -17.5 202.5 {name=OE dir=inout}
+T {OE} 5 195 0 0 0.2 0.2 {font=Monospace}
+L 7 0 220 -20 220 {}
+B 5 -22.5 217.5 -17.5 222.5 {name=IE dir=inout}
+T {IE} 5 215 0 0 0.2 0.2 {font=Monospace}
+L 7 0 240 -20 240 {}
+B 5 -22.5 237.5 -17.5 242.5 {name=PU dir=inout}
+T {PU} 5 235 0 0 0.2 0.2 {font=Monospace}
+L 7 180 300 180 320 {}
+B 5 177.5 317.5 182.5 322.5 {name=DVSS dir=inout}
+T {DVSS} 175 295 3 0 0.2 0.2 {font=Monospace}
+L 7 200 300 200 320 {}
+B 5 197.5 317.5 202.5 322.5 {name=VSS dir=inout}
+T {VSS} 195 295 3 0 0.2 0.2 {font=Monospace}

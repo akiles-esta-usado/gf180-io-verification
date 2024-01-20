@@ -2,17 +2,5 @@ source $env(PDK_ROOT)/gf180mcuD/libs.tech/xschem/xschemrc
 
 set script_path [ file dirname [ file normalize [ info script ] ] ]
 
-# foreach directory [ glob -nocomplain -type d * ] {
-
-#     set relevant_files {}
-
-#     append relevant_files [ glob -nocomplain ./$directory/*.sch ]
-#     append relevant_files [ glob -nocomplain ./$directory/*.sym ]
-
-#     if { [ llength $relevant_files ] > 0 } {
-#         append XSCHEM_LIBRARY_PATH :$script_path/$directory
-#     }
-# }
-
-append XSCHEM_LIBRARY_PATH :$script_path
+append XSCHEM_LIBRARY_PATH :$script_path/extraction
 #set XSCHEM_START_WINDOW {0_topasdf.sch}
