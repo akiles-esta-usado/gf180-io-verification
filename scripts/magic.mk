@@ -5,7 +5,16 @@ MAGIC_LOG=$(LOG_DIR)/$(TIMESTAMP_TIME)-magic-$(TOP).log
 MAGIC_LVS_LOG=$(LOG_DIR)/$(TIMESTAMP_TIME)-magic-lvs-$(TOP).log
 MAGIC_PEX_LOG=$(LOG_DIR)/$(TIMESTAMP_TIME)-magic-pex-$(TOP).log
 
-MAGIC=PEX_DIR=$(TOP_GDS_DIR) LVS_DIR=$(TOP_GDS_DIR) LAYOUT=$(TOP_GDS) TOP=$(TOP) magic -rcfile $(MAGIC_RCFILE) -noconsole
+LVS_DIR=$(EXTRACTION_DIR)/lvs
+PEX_DIR=$(EXTRACTION_DIR)/pex
+
+# layout =   $env(LAYOUT)
+# cellname = $env(TOP)
+# lvsdir =   $env(LVS_DIR)
+# pexdir =   $env(PEX_DIR)
+# cellname = $env(TOP_GDS_CELLNAME)
+
+MAGIC=PEX_DIR=$(PEX_DIR) LVS_DIR=$(LVS_DIR) LAYOUT=$(TOP_GDS) TOP=$(TOP_GDS_CELLNAME) magic -rcfile $(MAGIC_RCFILE) -noconsole
 MAGIC_BATCH=$(MAGIC) -nowrapper -nowindow -D -dnull
 
 define HELP_ENTRIES +=
@@ -48,10 +57,8 @@ magic-edit: magic-validation
 .PHONY: magic-lvs
 magic-lvs: magic-validation
 	cd $(TOP_GDS_DIR) && $(MAGIC_BATCH) $(MAGIC_LVS_SCRIPT) |& tee $(MAGIC_LVS_LOG)
-	make TOP=$(TOP) gen-lvs-sym
 
 
 .PHONY: magic-pex
 magic-pex: magic-validation
 	cd $(TOP_GDS_DIR) && $(MAGIC_BATCH) $(MAGIC_PEX_SCRIPT) |& tee $(MAGIC_PEX_LOG)
-	make TOP=$(TOP) gen-sym

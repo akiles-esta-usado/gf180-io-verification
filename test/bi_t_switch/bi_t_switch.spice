@@ -1,0 +1,50 @@
+** sch_path: /workspaces/gf180-io-verification/test/bi_t_switch/bi_t_switch.sch
+**.subckt bi_t_switch
+V1 DVDD GND 3
+V2 VDD GND 3
+V3 DVSS GND 0
+V4 VSS GND 0
+V5 A GND PULSE(0 3 10n 100p 100p 7n 20n)
+V7 IE GND 0
+V8 OE GND 3
+V9 PU GND 0
+V10 PD GND 3
+V11 SL GND 0
+V13 CS GND 0
+**** begin user architecture code
+
+
+.tran 100p 100n
+.save all
+.control
+run
+display
+*plot A PAD0 Y0
+*plot A PAD0 PAD1 PAD2 PAD3
+plot A PAD0 PAD3 PAD4
+.endc
+
+
+
+.include /home/designer/.volare/gf180mcuD/libs.tech/ngspice/design.ngspice
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice diode_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice res_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice mimcap_typical
+.lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice moscap_typical
+
+
+.include ../../extraction/lvs/gf180mcu_fd_io__bi_t.cir
+.include ./gf180mcu_fd_io__bi_t_openfasoc.spice
+*NEW PINLIST: DVSS DVDD PAD  SL A Y  PDRV1 PDRV0 PD CS OE IE PU VDD VSS
+
+XDUT0         DVSS DVDD PAD0 SL A Y0 VSS   VSS   PD CS OE IE PU VDD VSS  gf180mcu_fd_io__bi_t_flat
+XDUT3         DVSS DVDD PAD3 SL A Y3 VDD   VDD   PD CS OE IE PU VDD VSS  gf180mcu_fd_io__bi_t_flat
+
+* From OpenFasoc
+XDUT4    A CS DVDD DVSS IE OE PAD4 PD VSS VSS PU SL VDD VSS Y4 gf180mcu_fd_io__bi_t_extracted
+
+**** end user architecture code
+**.ends
+.GLOBAL GND
+.end
