@@ -21,11 +21,8 @@ TIMESTAMP_TIME=$$(date +%H-%M-%S)
 
 ## 0. Enforce proposed structure
 
-ifeq (,$(realpath ./extraction))
 $(shell mkdir -p ./extraction/lvs)
 $(shell mkdir -p ./extraction/pex)
-$(call WARNING_MESSAGE, created ./extraction/ directory and subdirectories)
-endif
 
 ifeq (,$(realpath ./padring/))
 $(shell mkdir -p ./padring/)
@@ -71,7 +68,8 @@ ALL_FILES:= \
 	$(foreach pad_test, \
 		$(wildcard test/*), \
 		$(call GET_INTERESTING_FILES, $(pad_test)) \
-  )
+  ) \
+  $(wildcard gf180mcu_fd_io/*)
 
 ## 2. Filter by type #
 
@@ -82,13 +80,14 @@ ALL_LAYOUT:=$(filter %.gds,$(ALL_FILES))
 ALL_NETLIST:= \
 	$(filter %.spice,$(ALL_FILES)) \
 	$(filter %.cdl,$(ALL_FILES)) \
-	$(filter %.cir,$(ALL_FILES))
+	$(filter %/reports.cir,$(ALL_FILES))
+
 
 ## 3. Filter by subtype ##
 
 # Schematics
 SCH:=$(filter-out %-test.sch,$(ALL_SCH))
-SYM:=$(filter %.sym,$(ALL_FILES))
+ALL_SYM:=$(filter %.sym,$(ALL_FILES))
 
 # Testbenches
 TB:=$(filter %-test.sch,$(ALL_SCH))
@@ -112,15 +111,13 @@ CLEANABLE:= \
 
 ## 3. Files related with the TOP
 
-#
-
 ifeq (,$(TOP))
 # NEVER define TOP in this section. Empty TOP is useful as an indicator
 $(warning $(COLOR_YELLOW)TOP not defined, using default values$(COLOR_END))
 TOP_SCH=0_top.sch
 else
 TOP_SCH:=$(realpath $(filter %/$(TOP).sch,$(SCH)))
-TOP_SCH_DIR:=$(abspath $(dir $(TOP_SCH)))
+TOP_SYM:=$(realpath $(filter %/$(TOP).sym,$(ALL_SYM)))
 
 # There are 2 options for GDS
 # 1. GDS is a pad
@@ -129,32 +126,31 @@ ifneq (,$(realpath ./globalfoundries-pdk-libs-gf180mcu_fd_io/cells/$(TOP)))
 $(call INFO_MESSAGE, Found a pad associated with $(TOP))
 TOP_GDS:=$(realpath ./globalfoundries-pdk-libs-gf180mcu_fd_io/cells/$(TOP)/gf180mcu_fd_io__$(TOP)_5lm.gds)
 EXTRACTION_DIR:=$(realpath ./extraction)
-TOP_GDS_CELLNAME:=gf180mcu_fd_io__$(TOP)
+TOP_GDS_CELL:=gf180mcu_fd_io__$(TOP)
 
 else ifneq (,$(realpath ./padring/$(TOP)/$(TOP).gds))
 $(call INFO_MESSAGE, Found a padring associated with $(TOP))
 TOP_GDS:=$(realpath ./padring/$(TOP)/$(TOP).gds)
 EXTRACTION_DIR:=$(realpath $(dir $(TOP_GDS))/extraction)
-TOP_GDS_CELLNAME:=$(TOP)
+TOP_GDS_CELL:=$(TOP)
 
 endif
 #TOP_GDS:=$(realpath $(filter %/$(TOP).gds,$(GDS)))
 
 TOP_GDS_DIR:=$(abspath $(dir $(TOP_GDS)))
-
-TOP_GDS_CELL:=$(basename $(notdir $(TOP_GDS)))
+TOP_SCH_DIR:=$(abspath $(dir $(TOP_SCH)))
 
 # Extracted from schematics (xschem)
 TOP_NETLIST_SCH:=$(realpath $(filter %/$(TOP).spice,$(ALL_NETLIST)))
-TOP_NETLIST_LVS_NOPREFIX:=$(TOP_SCH_DIR)/$(TOP)-noprefix.spice
-TOP_NETLIST_LVS_PREFIX:=$(TOP_SCH_DIR)/$(TOP)-prefix.spice
+TOP_NETLIST_LVS_NOPREFIX:=$(TOP_SCH_DIR)/$(TOP)_noprefix.spice
+TOP_NETLIST_LVS_PREFIX:=$(TOP_SCH_DIR)/$(TOP)_prefix.spice
 
 # Extracted from layout
 # (klayout)
 TOP_EXTRACTED_KLAYOUT:=$(realpath $(filter %/$(TOP).cir,$(wildcard $(TOP_GDS_DIR)/*)))
 # (magic)
-TOP_EXTRACTED_MAGIC:=$(realpath $(filter %/$(TOP)-extracted.spice,$(wildcard $(TOP_GDS_DIR)/*)))
-TOP_EXTRACTED_PEX:=$(realpath $(filter %/$(TOP)-pex.spice,$(wildcard $(TOP_GDS_DIR)/*)))
+TOP_EXTRACTED_MAGIC:=$(realpath $(filter %/$(TOP)_extracted.spice,$(wildcard $(TOP_GDS_DIR)/*)))
+TOP_EXTRACTED_PEX:=$(realpath $(filter %/$(TOP)_pex.spice,$(wildcard $(TOP_GDS_DIR)/*)))
 
 endif
 
@@ -169,8 +165,6 @@ endif
 XSCHEM_RCFILE=$(realpath ./xschemrc)
 
 MAGIC_RCFILE=$(realpath ./magicrc)
-MAGIC_LVS_SCRIPT=$(realpath ./scripts/magic_lvs.tcl)
-MAGIC_PEX_SCRIPT=$(realpath ./scripts/magic_pex.tcl)
 
 NETGEN_RCFILE=$(realpath $(PDK_ROOT)/$(PDK)/libs.tech/netgen/setup.tcl)
 
@@ -228,7 +222,7 @@ Help message for Makefile
 
     $$ make TOP=resistor klayout-drc
     $$ make TOP=ldo-top xschem
-	  $$ make TOP=ldo-top print-TOP_GDS_DIR
+    $$ make TOP=ldo-top print-TOP_GDS_DIR
 
   clean:          Removes intermediate files.
   print-%:        For every variable, prints it's value
@@ -263,7 +257,6 @@ clean:
 
 # https://www.cmcrossroads.com/article/printing-value-makefile-variable
 # https://stackoverflow.com/questions/16467718/how-to-print-out-a-variable-in-makefile
-#print-% : ; $(info $*: $(flavor $*) variable - $($*)) @true
 print-% : ; $(info $*: $(flavor $*) variable - $($*)) @true
 
 
@@ -294,20 +287,20 @@ magic: magic-edit
 
 .PHONY: pex-all
 pex-all:
-	make TOP=asig_5p0 magic-pex
-	make TOP=bi_t magic-pex
-	make TOP=in_c magic-pex
-	make TOP=dvdd magic-pex
-	make TOP=dvss magic-pex
+	make TOP=asig_5p0 magic-pex-extraction
+	make TOP=bi_t     magic-pex-extraction
+	make TOP=in_c     magic-pex-extraction
+	make TOP=dvdd     magic-pex-extraction
+	make TOP=dvss     magic-pex-extraction
 
 
 .PHONY: lvs-all
 lvs-all:
-	make TOP=asig_5p0 magic-lvs
-	make TOP=bi_t magic-lvs
-	make TOP=in_c magic-lvs
-	make TOP=dvdd magic-lvs
-	make TOP=dvss magic-lvs
+	make TOP=asig_5p0 magic-lvs-extraction
+	make TOP=bi_t     magic-lvs-extraction
+	make TOP=in_c     magic-lvs-extraction
+	make TOP=dvdd     magic-lvs-extraction
+	make TOP=dvss     magic-lvs-extraction
 
 
 .PHONY: create-pad-test

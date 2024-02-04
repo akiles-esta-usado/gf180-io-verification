@@ -6,3 +6,6 @@
 	path = openfasoc-tapeouts
 	url = https://github.com/idea-fasoc/openfasoc-tapeouts.git
 	shallow = true
+[submodule "gf180mcu_fd_io"]
+	path = gf180mcu_fd_io
+	url = https://github.com/d-m-bailey/gf180mcu_fd_io.git

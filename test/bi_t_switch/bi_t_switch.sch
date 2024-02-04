@@ -5,6 +5,30 @@ K {}
 V {}
 S {}
 E {}
+B 2 1510 -770 2310 -370 {flags=graph
+y1=-0.038
+y2=3.2
+ypos1=0
+ypos2=2
+divy=5
+subdivy=1
+unity=1
+x1=-5e-09
+x2=4.5e-08
+divx=5
+subdivx=1
+xlabmag=1.0
+ylabmag=1.0
+node="A
+\\"Y0 PDRV 00;y0\\"
+\\"Y3 PDRV 11;y3\\"
+\\"Y4 00;y4\\""
+color="7 4 6 10"
+dataset=-1
+unitx=1
+logx=0
+logy=0
+rainbow=1}
 N 150 -490 150 -470 {
 lab=GND}
 N 150 -610 150 -550 {
@@ -70,14 +94,21 @@ lab=GND}
 C {devices/code_shown.sym} 1050 -630 0 0 {name=s1
 only_toplevel=false
 value="
-.tran 100p 100n
-.save all
 .control
-run
 display
+*save all
+save y0 y3 y4 y5 y6
+
+tran 100p 50n
+
 *plot A PAD0 Y0
 *plot A PAD0 PAD1 PAD2 PAD3
-plot A PAD0 PAD3 PAD4
+*plot A PAD0 PAD3 PAD4
+*plot A Y0 Y3 Y4
+
+
+write
+
 .endc
 "}
 C {devices/code_shown.sym} 1050 -800 0 0 {name=MODELS only_toplevel=true
@@ -90,40 +121,68 @@ value="
 .lib $::180MCU_MODELS/sm141064.ngspice mimcap_typical
 .lib $::180MCU_MODELS/sm141064.ngspice moscap_typical
 "}
-C {devices/code_shown.sym} 70 -870 0 0 {name=DUT only_toplevel=true
+C {devices/code_shown.sym} 0 -1000 0 0 {name="Mehdi Team"
+only_toplevel=true
+spice_ignore=0
 format="tcleval( @value )"
 value="
-.include "../../extraction/lvs/gf180mcu_fd_io__bi_t.cir"
 .include "./gf180mcu_fd_io__bi_t_openfasoc.spice"
-*NEW PINLIST: DVSS DVDD PAD  SL A Y  PDRV1 PDRV0 PD CS OE IE PU VDD VSS
-
-XDUT0         DVSS DVDD PAD0 SL A Y0 VSS   VSS   PD CS OE IE PU VDD VSS  gf180mcu_fd_io__bi_t_flat
-XDUT3         DVSS DVDD PAD3 SL A Y3 VDD   VDD   PD CS OE IE PU VDD VSS  gf180mcu_fd_io__bi_t_flat
-
-* From OpenFasoc
-XDUT4    A CS DVDD DVSS IE OE PAD4 PD VSS VSS PU SL VDD VSS Y4 gf180mcu_fd_io__bi_t_extracted
+* gf180mcu_fd_io__bi_t_extracted A CS DVDD DVSS IE OE PAD  PD PDRV0 PDRV1 PU SL VDD VSS Y
+XDUT4                            A CS DVDD DVSS IE OE PAD4 PD VSS   VSS   PU SL VDD VSS Y4 gf180mcu_fd_io__bi_t_extracted
 "}
-C {devices/vsource.sym} 150 -520 0 0 {name=V1 value=3}
+C {devices/vsource.sym} 150 -520 0 0 {name=V1 value=\{v_max\}}
 C {devices/gnd.sym} 150 -470 0 0 {name=l1 lab=GND}
 C {devices/lab_wire.sym} 150 -590 0 0 {name=p1 sig_type=std_logic lab=DVDD}
-C {devices/vsource.sym} 210 -520 0 0 {name=V2 value=3}
+C {devices/vsource.sym} 210 -520 0 0 {name=V2 value=\{v_max\}}
 C {devices/lab_wire.sym} 210 -590 0 0 {name=p2 sig_type=std_logic lab=VDD}
 C {devices/vsource.sym} 270 -520 0 0 {name=V3 value=0}
 C {devices/lab_wire.sym} 270 -590 0 0 {name=p3 sig_type=std_logic lab=DVSS}
 C {devices/vsource.sym} 330 -520 0 0 {name=V4 value=0}
 C {devices/lab_wire.sym} 330 -590 0 0 {name=p4 sig_type=std_logic lab=VSS}
-C {devices/vsource.sym} 390 -330 0 0 {name=V5 value="PULSE(0 3 10n 100p 100p 7n 20n)"}
+C {devices/vsource.sym} 390 -330 0 0 {name=V5 value="PULSE(0 \{v_max\} 10n 100p 100p \{t_on\} \{t_total\})"}
 C {devices/lab_wire.sym} 390 -400 0 0 {name=p5 sig_type=std_logic lab=A}
-C {devices/vsource.sym} 510 -520 0 0 {name=V7 value=0}
+C {devices/vsource.sym} 510 -520 0 0 {name=V7 value=\{v_max\}}
 C {devices/lab_wire.sym} 510 -590 0 0 {name=p7 sig_type=std_logic lab=IE}
-C {devices/vsource.sym} 570 -520 0 0 {name=V8 value=3}
+C {devices/vsource.sym} 570 -520 0 0 {name=V8 value=\{v_max\}}
 C {devices/lab_wire.sym} 570 -590 0 0 {name=p8 sig_type=std_logic lab=OE}
 C {devices/vsource.sym} 630 -520 0 0 {name=V9 value=0}
 C {devices/lab_wire.sym} 630 -590 0 0 {name=p9 sig_type=std_logic lab=PU}
-C {devices/vsource.sym} 690 -520 0 0 {name=V10 value=3}
+C {devices/vsource.sym} 690 -520 0 0 {name=V10 value=0}
 C {devices/lab_wire.sym} 690 -590 0 0 {name=p10 sig_type=std_logic lab=PD}
 C {devices/vsource.sym} 750 -520 0 0 {name=V11 value=0}
 C {devices/lab_wire.sym} 750 -590 0 0 {name=p11 sig_type=std_logic lab=SL}
 C {devices/gnd.sym} 390 -280 0 0 {name=l2 lab=GND}
-C {devices/vsource.sym} 810 -520 0 0 {name=V13 value=0}
+C {devices/vsource.sym} 810 -520 0 0 {name=V13 value=3.3}
 C {devices/lab_wire.sym} 810 -590 0 0 {name=p13 sig_type=std_logic lab=CS}
+C {devices/code_shown.sym} 650 -380 0 0 {name=s2
+only_toplevel=false
+place=header
+value="
+.param v_max=3
+.param t_total=20n
+.param t_on=10n
+"}
+C {devices/launcher.sym} 1560 -810 0 0 {name=h5
+descr="load waves" 
+tclcommand="xschem raw_read $netlist_dir/rawspice.raw tran"
+}
+C {devices/code_shown.sym} 0 -850 0 0 {name="PEX Simulation"
+only_toplevel=true
+format="tcleval( @value )"
+spice_ignore=0
+value="
+.include "../../extraction/pex/gf180mcu_fd_io__bi_t_pex.spice"
+* gf180mcu_fd_io__bi_t_pex DVSS DVDD PAD  SL A Y  PDRV1 PDRV0 PD CS OE IE PU VDD VSS
+XDUT5                      DVSS DVDD PAD5 SL A Y5 VDD   VDD   PD CS OE IE PU VDD VSS gf180mcu_fd_io__bi_t_pex
+XDUT6                      DVSS DVDD PAD6 SL A Y6 VSS   VSS   PD CS OE IE PU VDD VSS gf180mcu_fd_io__bi_t_pex
+"}
+C {devices/code_shown.sym} 0 -1140 0 0 {name="Clean Simulation"
+only_toplevel=true
+spice_ignore=0
+format="tcleval( @value )"
+value="
+.include "../../extraction/lvs/gf180mcu_fd_io__bi_t_extracted.spice"
+* gf180mcu_fd_io__bi_t VSS VDD DVSS DVDD PAD  CS PU PDRV0 PDRV1 PD IE SL A OE Y
+XDUT0                  VSS VDD DVSS DVDD PAD0 CS PU VSS   VSS   PD IE SL A OE Y0  gf180mcu_fd_io__bi_t
+XDUT3                  VSS VDD DVSS DVDD PAD3 CS PU VDD   VDD   PD IE SL A OE Y3  gf180mcu_fd_io__bi_t
+"}

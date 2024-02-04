@@ -1,27 +1,41 @@
 ** sch_path: /workspaces/gf180-io-verification/test/bi_t_switch/bi_t_switch.sch
+
+
+.param v_max=3
+.param t_total=20n
+.param t_on=10n
+
+
 **.subckt bi_t_switch
-V1 DVDD GND 3
-V2 VDD GND 3
+V1 DVDD GND {v_max}
+V2 VDD GND {v_max}
 V3 DVSS GND 0
 V4 VSS GND 0
-V5 A GND PULSE(0 3 10n 100p 100p 7n 20n)
-V7 IE GND 0
-V8 OE GND 3
+V5 A GND PULSE(0 {v_max} 10n 100p 100p {t_on} {t_total})
+V7 IE GND {v_max}
+V8 OE GND {v_max}
 V9 PU GND 0
-V10 PD GND 3
+V10 PD GND 0
 V11 SL GND 0
-V13 CS GND 0
+V13 CS GND 3.3
 **** begin user architecture code
 
 
-.tran 100p 100n
-.save all
 .control
-run
 display
+*save all
+save y0 y3 y4 y5 y6
+
+tran 100p 50n
+
 *plot A PAD0 Y0
 *plot A PAD0 PAD1 PAD2 PAD3
-plot A PAD0 PAD3 PAD4
+*plot A PAD0 PAD3 PAD4
+*plot A Y0 Y3 Y4
+
+
+write
+
 .endc
 
 
@@ -34,15 +48,26 @@ plot A PAD0 PAD3 PAD4
 .lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice moscap_typical
 
 
-.include ../../extraction/lvs/gf180mcu_fd_io__bi_t.cir
 .include ./gf180mcu_fd_io__bi_t_openfasoc.spice
-*NEW PINLIST: DVSS DVDD PAD  SL A Y  PDRV1 PDRV0 PD CS OE IE PU VDD VSS
+* gf180mcu_fd_io__bi_t_extracted A CS DVDD DVSS IE OE PAD  PD PDRV0 PDRV1 PU SL VDD VSS Y
+XDUT4                            A CS DVDD DVSS IE OE PAD4 PD VSS   VSS   PU SL VDD VSS Y4
++ gf180mcu_fd_io__bi_t_extracted
 
-XDUT0         DVSS DVDD PAD0 SL A Y0 VSS   VSS   PD CS OE IE PU VDD VSS  gf180mcu_fd_io__bi_t_flat
-XDUT3         DVSS DVDD PAD3 SL A Y3 VDD   VDD   PD CS OE IE PU VDD VSS  gf180mcu_fd_io__bi_t_flat
 
-* From OpenFasoc
-XDUT4    A CS DVDD DVSS IE OE PAD4 PD VSS VSS PU SL VDD VSS Y4 gf180mcu_fd_io__bi_t_extracted
+.include ../../extraction/pex/gf180mcu_fd_io__bi_t_pex.spice
+* gf180mcu_fd_io__bi_t_pex DVSS DVDD PAD  SL A Y  PDRV1 PDRV0 PD CS OE IE PU VDD VSS
+XDUT5                      DVSS DVDD PAD5 SL A Y5 VDD   VDD   PD CS OE IE PU VDD VSS
++ gf180mcu_fd_io__bi_t_pex
+XDUT6                      DVSS DVDD PAD6 SL A Y6 VSS   VSS   PD CS OE IE PU VDD VSS
++ gf180mcu_fd_io__bi_t_pex
+
+
+.include ../../extraction/lvs/gf180mcu_fd_io__bi_t_extracted.spice
+* gf180mcu_fd_io__bi_t VSS VDD DVSS DVDD PAD  CS PU PDRV0 PDRV1 PD IE SL A OE Y
+XDUT0                  VSS VDD DVSS DVDD PAD0 CS PU VSS   VSS   PD IE SL A OE Y0
++  gf180mcu_fd_io__bi_t
+XDUT3                  VSS VDD DVSS DVDD PAD3 CS PU VDD   VDD   PD IE SL A OE Y3
++  gf180mcu_fd_io__bi_t
 
 **** end user architecture code
 **.ends

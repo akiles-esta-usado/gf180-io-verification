@@ -1,0 +1,182 @@
+* NGSPICE file created from gf180mcu_fd_io__dvdd.ext - technology: gf180mcuD
+
+.subckt nmos_6p0_CDNS_406619531459 D a_0_n44# S VSUBS
+X0 D a_0_n44# S VSUBS nfet_06v0 ad=2.2p pd=10.879999u as=2.2p ps=10.879999u w=5u l=0.7u
+.ends
+
+.subckt ppolyf_u_CDNS_406619531453 PLUS MINUS VSUBS
+X0 PLUS MINUS VSUBS ppolyf_u r_width=0.8u r_length=63.854996u
+.ends
+
+.subckt nmoscap_6p0_CDNS_406619531454 G D
+X0 G D cap_nmos_06v0 c_width=25u c_length=10u
+.ends
+
+.subckt comp018green_esd_rc_v5p0 VRC VPLUS VMINUS
+Xppolyf_u_CDNS_406619531453_0 ppolyf_u_CDNS_406619531453_0/PLUS VRC VMINUS ppolyf_u_CDNS_406619531453
+Xppolyf_u_CDNS_406619531453_1 ppolyf_u_CDNS_406619531453_1/PLUS ppolyf_u_CDNS_406619531453_8/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xppolyf_u_CDNS_406619531453_2 ppolyf_u_CDNS_406619531453_2/PLUS ppolyf_u_CDNS_406619531453_2/MINUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_0 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_3 ppolyf_u_CDNS_406619531453_3/PLUS ppolyf_u_CDNS_406619531453_3/MINUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_1 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_4 ppolyf_u_CDNS_406619531453_4/PLUS ppolyf_u_CDNS_406619531453_9/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_2 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_5 ppolyf_u_CDNS_406619531453_5/PLUS ppolyf_u_CDNS_406619531453_7/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xppolyf_u_CDNS_406619531453_6 VPLUS ppolyf_u_CDNS_406619531453_2/PLUS VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_3 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_7 ppolyf_u_CDNS_406619531453_7/PLUS ppolyf_u_CDNS_406619531453_3/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_4 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_8 ppolyf_u_CDNS_406619531453_8/PLUS ppolyf_u_CDNS_406619531453_0/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_5 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xnmoscap_6p0_CDNS_406619531454_6 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_9 ppolyf_u_CDNS_406619531453_9/PLUS ppolyf_u_CDNS_406619531453_5/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xnmoscap_6p0_CDNS_406619531454_7 VRC VMINUS nmoscap_6p0_CDNS_406619531454
+Xppolyf_u_CDNS_406619531453_10 ppolyf_u_CDNS_406619531453_3/MINUS ppolyf_u_CDNS_406619531453_1/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+Xppolyf_u_CDNS_406619531453_11 ppolyf_u_CDNS_406619531453_2/MINUS ppolyf_u_CDNS_406619531453_4/PLUS
++ VMINUS ppolyf_u_CDNS_406619531453
+.ends
+
+.subckt nmos_6p0_CDNS_406619531458 D a_732_n44# a_976_n44# a_0_n44# S a_1220_n44#
++ a_244_n44# a_488_n44# VSUBS
+X0 D a_976_n44# S VSUBS nfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X1 S a_732_n44# D VSUBS nfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X2 S a_1220_n44# D VSUBS nfet_06v0 ad=2.2p pd=10.879999u as=1.3p ps=5.52u w=5u l=0.7u
+X3 S a_244_n44# D VSUBS nfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X4 D a_488_n44# S VSUBS nfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X5 D a_0_n44# S VSUBS nfet_06v0 ad=1.3p pd=5.52u as=2.2p ps=10.879999u w=5u l=0.7u
+.ends
+
+.subckt nmos_6p0_CDNS_406619531457 D a_3904_n44# a_4392_n44# a_2928_n44# a_1952_n44#
++ a_4148_n44# a_3172_n44# a_1708_n44# a_2196_n44# a_732_n44# a_976_n44# a_0_n44# S
++ a_4636_n44# a_3660_n44# a_3416_n44# a_2440_n44# a_2684_n44# a_1220_n44# a_1464_n44#
++ a_244_n44# a_488_n44# VSUBS
+X0 S a_1708_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X1 D a_1952_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X2 D a_2928_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X3 S a_3172_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X4 S a_4148_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X5 D a_3904_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X6 D a_4392_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X7 D a_976_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X8 S a_732_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X9 D a_1464_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X10 S a_1220_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X11 S a_2684_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X12 D a_2440_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X13 D a_3416_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X14 S a_3660_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X15 S a_4636_n44# D VSUBS nfet_06v0 ad=21.999998p pd=0.10088m as=12.999999p ps=50.52u w=50u l=0.7u
+X16 S a_244_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X17 D a_488_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+X18 D a_0_n44# S VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=21.999998p ps=0.10088m w=50u l=0.7u
+X19 S a_2196_n44# D VSUBS nfet_06v0 ad=12.999999p pd=50.52u as=12.999999p ps=50.52u w=50u l=0.7u
+.ends
+
+.subckt nmos_clamp_20_50_4_DVDD a_1421_9793# VSUBS nmos_6p0_CDNS_406619531457_3/S
+Xnmos_6p0_CDNS_406619531457_0 VSUBS a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ nmos_6p0_CDNS_406619531457_3/S a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# VSUBS nmos_6p0_CDNS_406619531457
+Xnmos_6p0_CDNS_406619531457_1 VSUBS a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ nmos_6p0_CDNS_406619531457_3/S a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# VSUBS nmos_6p0_CDNS_406619531457
+Xnmos_6p0_CDNS_406619531457_2 VSUBS a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ nmos_6p0_CDNS_406619531457_3/S a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# VSUBS nmos_6p0_CDNS_406619531457
+Xnmos_6p0_CDNS_406619531457_3 VSUBS a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ nmos_6p0_CDNS_406619531457_3/S a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793#
++ a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# a_1421_9793# VSUBS nmos_6p0_CDNS_406619531457
+.ends
+
+.subckt comp018green_esd_clamp_v5p0_DVDD nmos_6p0_CDNS_406619531459_0/S a_2253_27178#
++ comp018green_esd_rc_v5p0_0/VPLUS
+Xnmos_6p0_CDNS_406619531459_0 nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VRC
++ nmos_6p0_CDNS_406619531459_0/S nmos_6p0_CDNS_406619531459_0/S nmos_6p0_CDNS_406619531459
+Xcomp018green_esd_rc_v5p0_0 comp018green_esd_rc_v5p0_0/VRC comp018green_esd_rc_v5p0_0/VPLUS
++ nmos_6p0_CDNS_406619531459_0/S comp018green_esd_rc_v5p0
+Xnmos_6p0_CDNS_406619531458_0 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D
++ nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531459_0/S
++ nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_1/D
++ nmos_6p0_CDNS_406619531459_0/S nmos_6p0_CDNS_406619531458
+Xnmos_clamp_20_50_4_DVDD_0 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531459_0/S
++ comp018green_esd_rc_v5p0_0/VPLUS nmos_clamp_20_50_4_DVDD
+Xnmos_6p0_CDNS_406619531458_1 nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531459_0/D
++ nmos_6p0_CDNS_406619531459_0/D nmos_6p0_CDNS_406619531459_0/D nmos_6p0_CDNS_406619531459_0/S
++ nmos_6p0_CDNS_406619531459_0/D nmos_6p0_CDNS_406619531459_0/D nmos_6p0_CDNS_406619531459_0/D
++ nmos_6p0_CDNS_406619531459_0/S nmos_6p0_CDNS_406619531458
+X0 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X1 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X2 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X3 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=2.2p ps=10.879999u w=5u l=0.7u
+X4 nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X5 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X6 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X7 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X8 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X9 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X10 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X11 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X12 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X13 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X14 comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VRC nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X15 nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VRC comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=2.2p ps=10.879999u w=5u l=0.7u
+X16 comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VRC nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X17 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X18 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X19 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X20 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X21 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=2.2p pd=10.879999u as=1.3p ps=5.52u w=5u l=0.7u
+X22 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X23 nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=2.2p pd=10.879999u as=1.3p ps=5.52u w=5u l=0.7u
+X24 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X25 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X26 nmos_6p0_CDNS_406619531459_0/D comp018green_esd_rc_v5p0_0/VRC comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X27 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531459_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X28 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X29 nmos_6p0_CDNS_406619531458_0/D nmos_6p0_CDNS_406619531458_1/D comp018green_esd_rc_v5p0_0/VPLUS comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+X30 comp018green_esd_rc_v5p0_0/VPLUS nmos_6p0_CDNS_406619531458_1/D nmos_6p0_CDNS_406619531458_0/D comp018green_esd_rc_v5p0_0/VPLUS pfet_06v0 ad=1.3p pd=5.52u as=1.3p ps=5.52u w=5u l=0.7u
+.ends
+
+.subckt nmoscap_6p0_CDNS_406619531450 G D
+X0 G D cap_nmos_06v0 c_width=15u c_length=15u
+.ends
+
+.subckt np_6p0_CDNS_406619531451 MINUS
+D0 VSUBS MINUS diode_nd2ps_06v0 pj=82u area=40p
+.ends
+
+.subckt GF_NI_DVDD_BASE DVSS m2_2279_36800# VSUBS nmoscap_6p0_CDNS_406619531450_3/D
++ DVDD
+Xcomp018green_esd_clamp_v5p0_DVDD_0 nmoscap_6p0_CDNS_406619531450_3/D nmoscap_6p0_CDNS_406619531450_3/D
++ DVDD comp018green_esd_clamp_v5p0_DVDD
+Xnmoscap_6p0_CDNS_406619531450_0 DVDD nmoscap_6p0_CDNS_406619531450_3/D nmoscap_6p0_CDNS_406619531450
+Xnmoscap_6p0_CDNS_406619531450_1 DVDD nmoscap_6p0_CDNS_406619531450_3/D nmoscap_6p0_CDNS_406619531450
+Xnp_6p0_CDNS_406619531451_0 DVDD np_6p0_CDNS_406619531451
+Xnmoscap_6p0_CDNS_406619531450_2 DVDD nmoscap_6p0_CDNS_406619531450_3/D nmoscap_6p0_CDNS_406619531450
+Xnp_6p0_CDNS_406619531451_1 DVDD np_6p0_CDNS_406619531451
+Xnmoscap_6p0_CDNS_406619531450_3 DVDD nmoscap_6p0_CDNS_406619531450_3/D nmoscap_6p0_CDNS_406619531450
+Xnp_6p0_CDNS_406619531451_2 DVDD np_6p0_CDNS_406619531451
+Xnp_6p0_CDNS_406619531451_3 DVDD np_6p0_CDNS_406619531451
+.ends
+
+.subckt x5LM_METAL_RAIL_PAD_60 Bondpad_5LM_0/m5_n400_0# 5LM_METAL_RAIL_0/VDD 5LM_METAL_RAIL_0/VSS
++ 5LM_METAL_RAIL_0/DVSS 5LM_METAL_RAIL_0/DVDD VSUBS
+.ends
+
+.subckt gf180mcu_fd_io__dvdd DVSS VSS DVDD
+XGF_NI_DVDD_BASE_0 DVSS VSS VSS DVSS DVDD GF_NI_DVDD_BASE
+X5LM_METAL_RAIL_PAD_60_0 DVDD DVDD VSS DVSS DVDD VSS x5LM_METAL_RAIL_PAD_60
+.ends
+
