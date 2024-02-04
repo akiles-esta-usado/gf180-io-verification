@@ -17,14 +17,14 @@ V8 OE GND {v_max}
 V9 PU GND 0
 V10 PD GND 0
 V11 SL GND 0
-V13 CS GND 3.3
+V13 CS GND {v_max}
 **** begin user architecture code
 
 
 .control
 display
 *save all
-save y0 y3 y4 y5 y6
+save A y0 y3 y4 y5 y6
 
 tran 100p 50n
 
@@ -46,12 +46,6 @@ write
 .lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice res_typical
 .lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice mimcap_typical
 .lib /home/designer/.volare/gf180mcuD/libs.tech/ngspice/sm141064.ngspice moscap_typical
-
-
-.include ./gf180mcu_fd_io__bi_t_openfasoc.spice
-* gf180mcu_fd_io__bi_t_extracted A CS DVDD DVSS IE OE PAD  PD PDRV0 PDRV1 PU SL VDD VSS Y
-XDUT4                            A CS DVDD DVSS IE OE PAD4 PD VSS   VSS   PU SL VDD VSS Y4
-+ gf180mcu_fd_io__bi_t_extracted
 
 
 .include ../../extraction/pex/gf180mcu_fd_io__bi_t_pex.spice

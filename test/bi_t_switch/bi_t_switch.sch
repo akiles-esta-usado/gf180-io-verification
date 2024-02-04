@@ -5,30 +5,85 @@ K {}
 V {}
 S {}
 E {}
-B 2 1510 -770 2310 -370 {flags=graph
-y1=-0.038
+B 2 1850 -1040 2650 -640 {flags=graph
+y1=-0.044
 y2=3.2
 ypos1=0
 ypos2=2
 divy=5
 subdivy=1
 unity=1
-x1=-5e-09
-x2=4.5e-08
+x1=9.65122e-09
+x2=2.66668e-08
 divx=5
 subdivx=1
 xlabmag=1.0
 ylabmag=1.0
 node="A
-\\"Y0 PDRV 00;y0\\"
-\\"Y3 PDRV 11;y3\\"
-\\"Y4 00;y4\\""
-color="7 4 6 10"
+\\"4mA (LVS);y0\\"
+\\"4mA (PEX); y6\\"
+\\"16mA (LVS);y3\\"
+\\"16mA (PEX); y5\\"
+\\"Mehdi 4mA;y4\\""
+color="7 4 6 10 7 19"
 dataset=-1
 unitx=1
 logx=0
 logy=0
 rainbow=1}
+T {IE  OE  Input Output Control
+----------------------------
+0   0   IO Disable
+0   1   Output Enabled
+1   0   Input Enabled
+1   1   Disallowed
+
+
+CS  Input Type
+--------------
+0   CMOS Buffer
+1   Schmitt Trigger
+
+
+PU  PD  Resistive Pulling
+-------------------------
+0   0   Normal CMOS
+0   1   Pull Down
+1   0   Pull Up
+1   1   Normal CMOS
+
+
+SL Output Slew Rate
+-------------------
+0  Fast
+1  Slow
+
+
+PDRV1 PDRV0 Output drive strength
+---------------------------------
+0     0     4mA
+0     1     8mA
+1     0     12mA
+1     1     16mA
+
+
+DVDD  5V supply for output drivers
+VDD   5V supply for pre-drive in I/O pads
+DVSS  Ground for output drivers
+VSS   Ground for pre-drive in I/O pads
+IE    Input enable
+PD    Pull-down enable
+PU    Pull-up enable
+Y     Data output to core
+PAD   Data input from/output to bond pad
+OE    Output enable
+A     Data input from core
+CS    CMOS/Schmitt trigger input select
+SL    Fast/Slow slew rate select
+PDRV0 Output drive strength selector
+PDRV1 Output drive strength selector} -520 -1160 0 0 0.4 0.4 {font=monospace}
+T {} -530 -350 0 0 0.4 0.4 {font=Monospace}
+T {Each block can be ignored with property `spice_ignore=1`} 90 -1270 0 0 0.4 0.4 {}
 N 150 -490 150 -470 {
 lab=GND}
 N 150 -610 150 -550 {
@@ -91,13 +146,11 @@ N 810 -610 810 -550 {
 lab=CS}
 N 330 -470 510 -470 {
 lab=GND}
-C {devices/code_shown.sym} 1050 -630 0 0 {name=s1
+C {devices/code_shown.sym} 1390 -1110 0 0 {name=s1
 only_toplevel=false
 value="
 .control
-display
-*save all
-save y0 y3 y4 y5 y6
+save A y0 y3 y4 y5 y6
 
 tran 100p 50n
 
@@ -111,7 +164,7 @@ write
 
 .endc
 "}
-C {devices/code_shown.sym} 1050 -800 0 0 {name=MODELS only_toplevel=true
+C {devices/code_shown.sym} 1390 -1280 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
 .include $::180MCU_MODELS/design.ngspice
@@ -123,7 +176,7 @@ value="
 "}
 C {devices/code_shown.sym} 0 -1000 0 0 {name="Mehdi Team"
 only_toplevel=true
-spice_ignore=0
+spice_ignore=1
 format="tcleval( @value )"
 value="
 .include "./gf180mcu_fd_io__bi_t_openfasoc.spice"
@@ -152,7 +205,7 @@ C {devices/lab_wire.sym} 690 -590 0 0 {name=p10 sig_type=std_logic lab=PD}
 C {devices/vsource.sym} 750 -520 0 0 {name=V11 value=0}
 C {devices/lab_wire.sym} 750 -590 0 0 {name=p11 sig_type=std_logic lab=SL}
 C {devices/gnd.sym} 390 -280 0 0 {name=l2 lab=GND}
-C {devices/vsource.sym} 810 -520 0 0 {name=V13 value=3.3}
+C {devices/vsource.sym} 810 -520 0 0 {name=V13 value=\{v_max\}}
 C {devices/lab_wire.sym} 810 -590 0 0 {name=p13 sig_type=std_logic lab=CS}
 C {devices/code_shown.sym} 650 -380 0 0 {name=s2
 only_toplevel=false
@@ -162,11 +215,11 @@ value="
 .param t_total=20n
 .param t_on=10n
 "}
-C {devices/launcher.sym} 1560 -810 0 0 {name=h5
+C {devices/launcher.sym} 1900 -1080 0 0 {name=h5
 descr="load waves" 
 tclcommand="xschem raw_read $netlist_dir/rawspice.raw tran"
 }
-C {devices/code_shown.sym} 0 -850 0 0 {name="PEX Simulation"
+C {devices/code_shown.sym} 0 -880 0 0 {name="PEX Simulation"
 only_toplevel=true
 format="tcleval( @value )"
 spice_ignore=0
